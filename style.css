@@ -91,7 +91,7 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-    margin: 24px 0;
+    margin: 18px 0 24px 0;
 }
 
 .level-btn {
@@ -102,7 +102,6 @@ body {
     flex-direction: column;
     align-items: center;
     font-weight: 800;
-    /* Mjukövergång för lyft-effekten */
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
 }
 
@@ -141,7 +140,7 @@ input[type="number"] {
     font-size: 1.4rem;
     text-align: center;
     margin-bottom: 16px;
-    border: null;
+    border: none;
     outline: none;
 }
 
@@ -162,7 +161,7 @@ input[type=number] {
     margin-bottom: 16px;
 }
 
-/* End-icons (🏆, 💥, 💀) */
+/* End-icons */
 .end-icon {
     font-size: 4rem;
     margin-bottom: 16px;
@@ -189,18 +188,25 @@ input[type=number] {
     font-size: 1.3rem;
 }
 
-/* Svävande Pokal i hörnet */
-.corner-trophy {
-    position: absolute;
-    top: -10px;
-    right: 10px;
-    font-size: 2.2rem;
-    z-index: 10;
-    animation: superPop 1.2s infinite alternate ease-in-out;
-    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+/* STÄNDIG TROFÉRÄKNARE I TOPPEN */
+.trophy-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin-bottom: 14px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.trophy-icon {
+    animation: gentlePop 2s infinite alternate ease-in-out;
 }
 
-/* Spel-animationer (Shake & Pop) */
+/* Spel-animationer */
 .shake { animation: shakeAnim 0.4s ease-in-out; }
 @keyframes shakeAnim {
     0%, 100% { transform: translateX(0); }
@@ -215,9 +221,9 @@ input[type=number] {
     100% { transform: scale(1); }
 }
 
-@keyframes superPop {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-4px) scale(1.1); }
+@keyframes gentlePop {
+    0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,215,0,0)); }
+    100% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(255,215,0,0.6)); }
 }
 
 
@@ -293,14 +299,11 @@ body.theme-cyber {
 .theme-cyber input[type="number"] { background: #020617; border: 2px solid #1e293b; color: #fff; font-family: 'Orbitron', sans-serif; border-radius: 12px; }
 .theme-cyber input[type="number"]:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.2); }
 
-/* Grid & Lyft-effekt (Hover) */
+/* Grid & Hover */
 .theme-cyber .level-btn { background: #0f172a; border: 2px solid #1e293b; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 1.8rem; }
 .theme-cyber .level-btn:hover:not(.completed) {
-    color: #fff;
-    border-color: #38bdf8;
-    background: rgba(56, 189, 248, 0.08);
-    transform: translateY(-5px) scale(1.02); /* Lyfter uppåt */
-    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35); /* Snyggt neon-glöd */
+    color: #fff; border-color: #38bdf8; background: rgba(56, 189, 248, 0.08);
+    transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
 }
 .theme-cyber .level-btn.selected { border-color: #38bdf8; color: #38bdf8; background: rgba(56,189,248,0.1); box-shadow: 0 0 15px rgba(56,189,248,0.25); }
 .theme-cyber .level-btn.completed { border-color: rgba(16,185,129,0.2); color: #10b981; background: rgba(16,185,129,0.05); }
@@ -310,14 +313,15 @@ body.theme-cyber {
 .theme-cyber .lives { filter: drop-shadow(0 0 4px #ef4444); }
 .theme-cyber .progress-container { background: #020617; border-radius: 20px; }
 .theme-cyber .progress-bar { background: linear-gradient(90deg, #38bdf8, #3b82f6); box-shadow: 0 0 8px #38bdf8; border-radius: 20px; }
+.theme-cyber .trophy-counter-badge { color: #38bdf8; border-color: rgba(56,189,248,0.2); font-family: 'Orbitron', sans-serif; }
 
 /* Knappar & Text */
 .theme-cyber .btn.primary { background: #3b82f6; color: #fff; border-radius: 14px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
 .theme-cyber .btn.primary:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
 .theme-cyber .btn.secondary { background: #1e293b; color: #94a3b8; border-radius: 14px; }
-.theme-cyber .btn.secondary:hover { color: #fff; background: #334155; }
 .theme-cyber .text-btn { color: #64748b; }
 .theme-cyber .text-btn:hover { color: #94a3b8; }
+.theme-cyber .reset-progress-btn:hover { color: #ef4444 !important; }
 .theme-cyber .question { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: #fff; font-weight: 800; }
 .theme-cyber .correct { color: #10b981; text-shadow: 0 0 8px rgba(16,185,129,0.3); }
 .theme-cyber .wrong { color: #ef4444; text-shadow: 0 0 8px rgba(239,68,68,0.3); }
@@ -335,8 +339,7 @@ body.theme-cyber {
 body.theme-dungeon {
     background-color: #1a110a;
     background-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%), url('https://www.transparenttextures.com/patterns/dark-rock.png');
-    color: #e0dac9;
-    font-family: 'Metamorphous', serif;
+    color: #e0dac9; font-family: 'Metamorphous', serif;
 }
 body.theme-dungeon::before {
     content: ""; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(253, 186, 116, 0.08) 0%, rgba(0,0,0,0) 50%); top: -10%; left: -10%; animation: flicker 3s infinite alternate; pointer-events: none;
@@ -361,24 +364,21 @@ body.theme-dungeon::before {
 .theme-dungeon input[type="number"] { background: #1a110a; border: 2px solid #33251a; color: #ffe08a; font-family: 'Grenze Gotisch', serif; border-radius: 4px; }
 .theme-dungeon input[type="number"]:focus { border-color: #d4af37; }
 
-/* Grid & Lyft-effekt (Hover) */
+/* Grid & Hover */
 .theme-dungeon .level-btn { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); border: 2px solid #3f3024; color: #a67c00; font-family: 'Grenze Gotisch', serif; font-size: 1.8rem; font-weight: 700; border-radius: 6px; text-shadow: 0 1px 1px #000; }
 .theme-dungeon .level-btn:hover:not(.completed) {
-    color: #ffe08a;
-    border-color: #ffe08a;
-    background-color: #3f3024;
-    transform: translateY(-5px) scale(1.02); /* Lyfter uppåt */
-    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25), 0 0 15px rgba(212, 175, 55, 0.1); /* Guld/Eldsglöd */
+    color: #ffe08a; border-color: #ffe08a; background-color: #3f3024;
+    transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25), 0 0 15px rgba(212, 175, 55, 0.1);
 }
 .theme-dungeon .level-btn.selected { border-color: #d4af37; color: #ffe08a; background-color: #3f3024; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
-.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #22c55e; background-color: #1e293b; background-image: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #22c55e; background-color: #1a110a; background-image: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
 
 /* Spel-UI & Framsteg */
 .theme-dungeon .game-header { font-family: 'Grenze Gotisch', serif; color: #8e8171; font-size: 1.2rem; }
 .theme-dungeon .lives { filter: drop-shadow(0 0 6px #ee0000); }
 .theme-dungeon .progress-container { background: #000; border: 2px solid #3f3024; border-radius: 4px; }
 .theme-dungeon .progress-bar { background: linear-gradient(90deg, #ee0000, #ff6b6b, #ee0000); background-size: 200% 100%; animation: lavaFlow 2s linear infinite; box-shadow: 0 0 8px #ee0000; border-radius: 0; }
-@keyframes lavaFlow { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
+.theme-dungeon .trophy-counter-badge { color: #d4af37; border-color: rgba(212,175,55,0.2); font-family: 'Grenze Gotisch', serif; font-size: 1.1rem; }
 
 /* Knappar & Text */
 .theme-dungeon .btn.primary { background: linear-gradient(135deg, #ee0000, #990000); color: white; border-radius: 4px; box-shadow: 0 4px 10px #000; }
@@ -386,33 +386,24 @@ body.theme-dungeon::before {
 .theme-dungeon .btn.secondary { background-color: #3f3024; color: #e0dac9; border: 1px solid #33251a; border-radius: 4px; }
 .theme-dungeon .text-btn { color: #5c4e3e; }
 .theme-dungeon .text-btn:hover { color: #8e8171; }
+.theme-dungeon .reset-progress-btn:hover { color: #ff6b6b !important; }
 .theme-dungeon .question { font-family: 'Grenze Gotisch', serif; font-size: 3.6rem; color: #ffe08a; text-shadow: 0 2px 4px #000; }
 .theme-dungeon .correct { color: #10b981; text-shadow: 0 0 5px rgba(16,185,129,0.4); }
 .theme-dungeon .wrong { color: #ee0000; text-shadow: 0 0 5px rgba(238,0,0,0.4); }
 
-/* Dungeon Vinst (Uppdaterad med snygg fantasy-text) */
+/* Dungeon Vinst */
 .theme-dungeon .epic-win { border: 5px double #d4af37; box-shadow: 0 0 50px rgba(212, 175, 55, 0.4); }
 .theme-dungeon #victory-title {
-    font-family: 'Metamorphous', serif; /* Ändrat för perfekt Å, Ä, Ö-stöd */
-    font-size: 2.3rem;
-    letter-spacing: 2px;
-    background: linear-gradient(180deg, #ffe08a, #d4af37, #a67c00);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 3px 5px #000);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+    font-family: 'Metamorphous', serif; font-size: 2.3rem; letter-spacing: 2px;
+    background: linear-gradient(180deg, #ffe08a, #d4af37, #a67c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 5px #000); text-transform: uppercase; margin-bottom: 16px;
 }
 .theme-dungeon #victory-text { font-family: 'Metamorphous', serif; color: #ffe08a !important; text-shadow: 0 1px 3px #000; font-size: 1.15rem; line-height: 1.4; }
 .theme-dungeon #badge-label { color: #8e8171; font-family: 'Metamorphous', serif; }
 
 .theme-dungeon .epic-btn {
-    background: linear-gradient(135deg, #d4af37, #a67c00) !important;
-    color: #1a110a !important;
-    border: 2px solid #ffe08a !important;
-    box-shadow: 0 4px 15px #000;
-    border-radius: 4px !important; /* Ger ett mer rustikt och kantigt utseende */
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 1.25rem;
-    letter-spacing: 1px;
+    background: linear-gradient(135deg, #d4af37, #a67c00) !important; color: #1a110a !important;
+    border: 2px solid #ffe08a !important; box-shadow: 0 4px 15px #000; border-radius: 4px !important;
+    font-family: 'Grenze Gotisch', serif; font-size: 1.25rem; letter-spacing: 1px;
 }
 .theme-dungeon .epic-btn:hover { background: linear-gradient(135deg, #ffe08a, #d4af37) !important; transform: translateY(-2px); }
