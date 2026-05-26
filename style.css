@@ -1,74 +1,97 @@
-/* --- GEMENSAMMA GRUNDSTILAR --- */
+/* =========================================
+   1. GEMENSAMMA GRUNDSTILAR & RESET
+   ========================================= */
 * {
     box-sizing: border-box;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
+    user-select: none;
 }
+
 body {
-    height: 100vh;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
     position: relative;
-    transition: background 0.5s ease;
+    transition: background 0.5s ease, color 0.5s ease;
 }
 
 .game-container {
     width: 100%;
-    max-width: 440px;
+    max-width: 480px;
     padding: 24px;
-    z-index: 1;
-    position: relative;
-}
-
-.screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    animation: screenEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.hidden { display: none !important; }
-
-@keyframes screenEnter {
-    from { opacity: 0; transform: scale(0.95) translateY(15px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* FIXAD: TEMA-KNAPPEN LIGGER NU SKEGGT I BOTTEN PÅ MENYN */
-.theme-toggle-btn {
-    margin-top: 32px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.85rem;
-    font-weight: 800;
-    padding: 10px 20px;
-    border-radius: 99px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.theme-toggle-btn:hover {
-    transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.card {
-    width: 100%;
-    padding: 32px 24px;
-    border-radius: 24px;
     text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Skärm-hantering */
+.screen {
+    width: 100%;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Allmänna Kort-stilar */
+.card, .victory-card, .modal-card {
+    padding: 24px;
+    margin-bottom: 24px;
     transition: all 0.3s ease;
 }
 
+/* Allmänna Knappar */
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.text-btn {
+    background: none !important;
+    border: none !important;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 8px;
+    box-shadow: none !important;
+}
+
+.text-btn:hover {
+    text-decoration: underline;
+    transform: none !important;
+}
+
+/* Nivåväljaren (Grid) */
 .level-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    width: 100%;
-    margin-bottom: 24px;
+    gap: 16px;
+    margin: 24px 0;
 }
 
 .level-btn {
@@ -78,184 +101,232 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all 0.2s ease;
+    font-weight: 800;
+    /* Mjukövergång för lyft-effekten */
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
 }
-.level-btn .lvl-title { font-size: 0.75rem; margin-top: 4px; font-weight: 600; }
 
+.lvl-title {
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+/* Spelmekanik (Input, Framsteg) */
 .progress-container {
     width: 100%;
     height: 12px;
-    border-radius: 99px;
     margin-bottom: 24px;
     overflow: hidden;
 }
+
 .progress-bar {
-    width: 0%; height: 100%;
-    border-radius: 99px;
-    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.game-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 700; }
-.logo { font-weight: 900; text-align: center; line-height: 1.1; margin-bottom: 8px; }
-.subtitle { margin-bottom: 40px; font-size: 1rem; text-align: center; }
-input[type="number"] { width: 100%; padding: 16px; border-radius: 14px; text-align: center; outline: none; margin-bottom: 16px; font-size: 1.6rem; font-weight: 800; transition: all 0.2s ease; }
-.btn { width: 100%; padding: 16px; border-radius: 14px; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: all 0.2s ease; text-transform: uppercase; }
-.btn:disabled { cursor: not-allowed; transform: none !important; box-shadow: none !important; opacity: 0.3; }
-.text-btn { background: transparent !important; margin-top: 12px; box-shadow: none !important; }
-.feedback { margin-top: 16px; min-height: 24px; font-weight: 800; font-size: 1.2rem; }
-
-/* BASSTILAR FÖR SLUTSKÄRMAR */
-.victory-card {
-    width: 100%;
-    padding: 40px 24px;
-    border-radius: 28px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-.end-icon { font-size: 6rem; margin-bottom: 16px; display: inline-block; }
-
-/* --- VINST-ANIMATIONER --- */
-.epic-win {
-    animation: epicReveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-}
-@keyframes epicReveal {
-    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-    70% { transform: scale(1.05) rotate(2deg); }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-.epic-win .end-icon {
-    animation: superPop 1s infinite alternate ease-in-out;
-}
-@keyframes superPop {
-    0% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
-    100% { transform: scale(1.15) translateY(-10px); filter: drop-shadow(0 0 25px var(--glow-color, #fff)); }
-}
-
-/* STATS BADGE I VINSTEN */
-.stats-badge {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 12px 20px;
-    border-radius: 16px;
-    margin: 20px 0;
+.game-header {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: bold;
 }
-.badge-label { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.6; font-weight: 800; }
-.badge-value { font-size: 1.5rem; font-weight: 900; }
 
-/* POP OCH SHAKE ANIMATIONER */
-.success-pop { animation: popEffect 0.3s ease; }
-@keyframes popEffect { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-.shake { animation: shakeEffect 0.3s ease; }
-@keyframes shakeEffect { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+input[type="number"] {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 16px;
+    border: null;
+    outline: none;
+}
 
-/* --- POP-UP (MODAL) ALLMÄN STIL --- */
+/* Ta bort pilar i input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.feedback {
+    font-size: 1.2rem;
+    font-weight: 700;
+    min-height: 28px;
+    margin-bottom: 16px;
+}
+
+/* End-icons (🏆, 💥, 💀) */
+.end-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+/* Stats badge på vinstskärm */
+.stats-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+}
+.badge-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+.badge-value {
+    font-size: 1.3rem;
+}
+
+/* Svävande Pokal i hörnet */
+.corner-trophy {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 2.2rem;
+    z-index: 10;
+    animation: superPop 1.2s infinite alternate ease-in-out;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+/* Spel-animationer (Shake & Pop) */
+.shake { animation: shakeAnim 0.4s ease-in-out; }
+@keyframes shakeAnim {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+.success-pop { animation: successPopAnim 0.4s ease-out; }
+@keyframes successPopAnim {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+@keyframes superPop {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-4px) scale(1.1); }
+}
+
+
+/* =========================================
+   2. POP-UP (MODAL) FÖR TEMABYTE
+   ========================================= */
+.theme-bottom-container {
+    margin-top: 32px;
+}
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.75);
     z-index: 100;
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: fadeIn 0.2s ease;
-}
-.modal-card {
-    width: 90%;
-    max-width: 360px;
-    padding: 28px;
-    border-radius: 24px;
-    text-align: center;
-    animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
 }
 .modal-options {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin: 24px 0 12px 0;
+    margin: 20px 0;
 }
 .modal-opt-btn {
-    width: 100%;
     padding: 16px;
     font-size: 1.1rem;
-    font-weight: 800;
+    font-weight: bold;
+    border-radius: 12px;
     cursor: pointer;
-    border: none;
-    border-radius: 14px;
-    transition: all 0.2s ease;
     text-align: left;
+    transition: all 0.2s;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modalScaleUp { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
 
 /* =========================================
-   TEMA 1: CYBER-NEON (Framtid / Sci-Fi)
+   TEMA 1: CYBER-NEON (Futuristisk / Blå)
    ========================================= */
 body.theme-cyber {
-    background-color: #060913;
-    color: #f8fafc;
+    background-color: #030712;
+    background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #030712 100%);
+    color: #f3f4f6;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
-body.theme-cyber::before {
-    content: ""; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0,0,0,0) 70%); top: 10%; left: 10%; filter: blur(30px);
+
+.theme-cyber .theme-toggle-btn { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+.theme-cyber .theme-toggle-btn:hover { color: #fff; background: #374151; }
+
+.theme-cyber .logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 2.8rem; letter-spacing: -1px; color: #fff; line-height: 1.1; }
+.theme-cyber .logo-sub { color: #00ffcc; font-weight: 800; font-size: 3rem; text-shadow: 0 0 12px rgba(0,255,204,0.5); }
+.theme-cyber .subtitle { color: #9ca3af; margin: 12px 0 32px 0; font-size: 1rem; }
+.theme-cyber h2 { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: 1px; }
+
+/* Cards & Modals */
+.theme-cyber .card, .theme-cyber .victory-card, .theme-cyber .modal-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.theme-cyber .help-card { background: rgba(17, 24, 39, 0.7); text-align: left; color: #d1d5db; }
+.theme-cyber .help-card p { margin-bottom: 12px; font-size: 1.05rem; }
+.theme-cyber .help-card p:last-child { margin-bottom: 0; }
+.theme-cyber .modal-opt-btn { background: #111827; color: #fff; border: 1px solid #1f2937; }
+.theme-cyber .modal-opt-btn:hover { border-color: #38bdf8; background: #1e293b; transform: translateX(4px); }
+.theme-cyber input[type="number"] { background: #020617; border: 2px solid #1e293b; color: #fff; font-family: 'Orbitron', sans-serif; border-radius: 12px; }
+.theme-cyber input[type="number"]:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.2); }
+
+/* Grid & Lyft-effekt (Hover) */
+.theme-cyber .level-btn { background: #0f172a; border: 2px solid #1e293b; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 1.8rem; }
+.theme-cyber .level-btn:hover:not(.completed) {
+    color: #fff;
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.08);
+    transform: translateY(-5px) scale(1.02); /* Lyfter uppåt */
+    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35); /* Snyggt neon-glöd */
 }
-.theme-cyber .theme-toggle-btn { background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-.theme-cyber .logo { font-family: 'Orbitron', sans-serif; font-size: 3.2rem; background: linear-gradient(135deg, #fff, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(56,189,248,0.3)); }
-.theme-cyber .logo-sub { color: #38bdf8; font-family: 'Orbitron', sans-serif; }
-.theme-cyber .subtitle { color: #64748b; }
-.theme-cyber h2 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 20px; color: #fff; }
+.theme-cyber .level-btn.selected { border-color: #38bdf8; color: #38bdf8; background: rgba(56,189,248,0.1); box-shadow: 0 0 15px rgba(56,189,248,0.25); }
+.theme-cyber .level-btn.completed { border-color: rgba(16,185,129,0.2); color: #10b981; background: rgba(16,185,129,0.05); }
+
+/* Spel-UI & Framsteg */
 .theme-cyber .game-header { font-family: 'Orbitron', sans-serif; color: #64748b; }
-.theme-cyber .lives { filter: drop-shadow(0 0 8px #ef4444); }
+.theme-cyber .lives { filter: drop-shadow(0 0 4px #ef4444); }
+.theme-cyber .progress-container { background: #020617; border-radius: 20px; }
+.theme-cyber .progress-bar { background: linear-gradient(90deg, #38bdf8, #3b82f6); box-shadow: 0 0 8px #38bdf8; border-radius: 20px; }
 
-/* Card, Victory & Pop-up */
-.theme-cyber .card, .theme-cyber .victory-card, .theme-cyber .modal-card { background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-.theme-cyber #modal-title { font-family: 'Orbitron', sans-serif; color: #fff; font-size: 1.4rem; }
-.theme-cyber .modal-opt-btn { background: rgba(31, 41, 55, 0.6); color: #fff; border: 1px solid rgba(255,255,255,0.05); }
-.theme-cyber .modal-opt-btn:hover { border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); color: #38bdf8; transform: translateX(4px); }
-.theme-cyber input[type="number"] { background: rgba(7, 10, 19, 0.6); border: 2px solid rgba(255, 255, 255, 0.08); color: white; font-family: 'Orbitron', sans-serif; }
-.theme-cyber input[type="number"]:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
-
-/* Cyber Victory */
-.theme-cyber .epic-win {
-    --glow-color: #00ffcc;
-    border: 2px solid #00ffcc;
-    box-shadow: 0 0 40px rgba(0, 255, 204, 0.25);
-}
-.theme-cyber #victory-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.3rem;
-    background: linear-gradient(90deg, #00ffcc, #38bdf8, #a855f7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 12px rgba(0,255,204,0.5));
-}
-.theme-cyber #victory-text { color: #94a3b8; font-size: 1.05rem; }
-.theme-cyber .epic-btn { animation: cyberPulseBtn 1.5s infinite alternate; }
-@keyframes cyberPulseBtn { 0% { box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4); } 100% { box-shadow: 0 5px 25px rgba(0, 255, 204, 0.8); transform: scale(1.02); } }
-
-/* Grid & Progress */
-.theme-cyber .level-btn { background: rgba(31, 41, 55, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; }
-.theme-cyber .level-btn:hover { color: #fff; border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
-.theme-cyber .level-btn.selected { border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-.theme-cyber .level-btn.completed { border-color: #10b981; color: #10b981; opacity: 0.5; }
-.theme-cyber .progress-container { background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.05); }
-.theme-cyber .progress-bar { background: linear-gradient(90deg, #38bdf8, #a855f7); box-shadow: 0 0 10px #38bdf8; }
-
-/* Buttons & Text */
-.theme-cyber .btn.primary { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #060913; box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
-.theme-cyber .btn.primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.5); }
-.theme-cyber .btn.secondary { background: rgba(31, 41, 55, 0.6); color: white; border: 1px solid rgba(255,255,255,0.08); }
-.theme-cyber .text-btn { color: #475569; }
+/* Knappar & Text */
+.theme-cyber .btn.primary { background: #3b82f6; color: #fff; border-radius: 14px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+.theme-cyber .btn.primary:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
+.theme-cyber .btn.secondary { background: #1e293b; color: #94a3b8; border-radius: 14px; }
+.theme-cyber .btn.secondary:hover { color: #fff; background: #334155; }
+.theme-cyber .text-btn { color: #64748b; }
 .theme-cyber .text-btn:hover { color: #94a3b8; }
-.theme-cyber .question { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; color: white; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-.theme-cyber .correct { color: #10b981; text-shadow: 0 0 10px #10b981; }
-.theme-cyber .wrong { color: #ef4444; text-shadow: 0 0 10px #ef4444; }
+.theme-cyber .question { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: #fff; font-weight: 800; }
+.theme-cyber .correct { color: #10b981; text-shadow: 0 0 8px rgba(16,185,129,0.3); }
+.theme-cyber .wrong { color: #ef4444; text-shadow: 0 0 8px rgba(239,68,68,0.3); }
+
+/* Cyber Vinst */
+.theme-cyber .epic-win { border: 2px solid #00ffcc; box-shadow: 0 0 30px rgba(0,255,204,0.25); }
+.theme-cyber .epic-btn { background: #00ffcc !important; color: #030712 !important; border-radius: 14px !important; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.5px; }
+.theme-cyber .epic-btn:hover { background: #22ffea !important; box-shadow: 0 0 15px rgba(0,255,204,0.4); }
+@keyframes cyberPulseBtn { 0% { box-shadow: 0 0 10px rgba(0,255,204,0.3); } 100% { box-shadow: 0 0 22px rgba(0,255,204,0.6); } }
 
 
 /* =========================================
@@ -268,71 +339,80 @@ body.theme-dungeon {
     font-family: 'Metamorphous', serif;
 }
 body.theme-dungeon::before {
-    content: ""; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(253, 186, 116, 0.08) 0%, rgba(0,0,0,0) 50%); top: -10%; left: -10%; animation: flicker 3s infinite alternate;
+    content: ""; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(253, 186, 116, 0.08) 0%, rgba(0,0,0,0) 50%); top: -10%; left: -10%; animation: flicker 3s infinite alternate; pointer-events: none;
 }
 @keyframes flicker { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-.theme-dungeon .theme-toggle-btn { background: #3f3024; border-color: #33251a; color: #a67c00; font-family: 'Grenze Gotisch', serif; }
+.theme-dungeon .theme-toggle-btn { background: #3f3024; border-color: #33251a; color: #a67c00; font-family: 'Grenze Gotisch', serif; border: 1px solid #33251a; }
+.theme-dungeon .theme-toggle-btn:hover { color: #ffe08a; background: #4a3b2c; }
+
 .theme-dungeon .logo { font-family: 'Grenze Gotisch', serif; font-size: 3.2rem; background: linear-gradient(180deg, #ffe08a, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
 .theme-dungeon .logo-sub { background: linear-gradient(180deg, #ff6b6b, #ee0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
-.theme-dungeon .subtitle { color: #8e8171; }
+.theme-dungeon .subtitle { color: #8e8171; margin: 12px 0 32px 0; }
 .theme-dungeon h2 { font-family: 'Grenze Gotisch', serif; font-size: 2.2rem; color: #d4af37; text-shadow: 0 2px 2px #000; }
-.theme-dungeon .game-header { font-family: 'Grenze Gotisch', serif; color: #8e8171; font-size: 1.2rem; }
-.theme-dungeon .lives { filter: drop-shadow(0 0 6px #ee0000); }
 
-/* Card, Victory & Pop-up */
+/* Cards & Modals */
 .theme-dungeon .card, .theme-dungeon .victory-card, .theme-dungeon .modal-card { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/dark-rock.png'); border: 4px solid #3f3024; box-shadow: 0 15px 35px #000, inset 0 0 20px rgba(0,0,0,0.6); border-radius: 8px; }
 .theme-dungeon #modal-title { font-family: 'Grenze Gotisch', serif; color: #d4af37; text-shadow: 0 2px 2px #000; font-size: 1.6rem; }
 .theme-dungeon .modal-opt-btn { background: #3f3024; color: #e0dac9; border: 2px solid #33251a; font-family: 'Grenze Gotisch', serif; font-size: 1.2rem; }
 .theme-dungeon .modal-opt-btn:hover { color: #ffe08a; border-color: #d4af37; background: #4a3b2c; transform: translateX(4px); }
 .theme-dungeon .help-card { background-color: #c9b999; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); color: #33251a; border: 2px solid #8e8171; }
-.theme-dungeon .help-card p { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; margin-bottom: 6px; }
+.theme-dungeon .help-card p { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; margin-bottom: 6px; text-align: left; }
 .theme-dungeon input[type="number"] { background: #1a110a; border: 2px solid #33251a; color: #ffe08a; font-family: 'Grenze Gotisch', serif; border-radius: 4px; }
 .theme-dungeon input[type="number"]:focus { border-color: #d4af37; }
 
-/* Dungeon Victory */
-.theme-dungeon .epic-win {
-    --glow-color: #ffaa00;
-    border: 5px double #d4af37;
-    box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
-}
-.theme-dungeon #victory-title {
-    font-family: 'Metamorphous', serif; font-size: 2.8rem;
-    background: linear-gradient(180deg, #ffe08a, #d4af37, #a67c00);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 3px 5px #000);
-}
-.theme-dungeon #victory-text { 
-    color: #fff6e0 !important;
-    text-shadow: 0 2px 4px #000, 0 0 10px rgba(0,0,0,0.8);
-    font-size: 1.2rem; 
-    font-weight: 600;
-}
-.theme-dungeon #badge-label { color: #8e8171; }
-.theme-dungeon .epic-btn {
-    background: linear-gradient(135deg, #d4af37, #a67c00) !important;
-    color: #1a110a !important;
-    border: 1px solid #ffe08a !important;
-    box-shadow: 0 4px 15px #000;
-    border-radius: 4px;
-}
-.theme-dungeon .epic-btn:hover { background: linear-gradient(135deg, #ffe08a, #d4af37) !important; }
-
-/* Grid & Progress */
+/* Grid & Lyft-effekt (Hover) */
 .theme-dungeon .level-btn { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); border: 2px solid #3f3024; color: #a67c00; font-family: 'Grenze Gotisch', serif; font-size: 1.8rem; font-weight: 700; border-radius: 6px; text-shadow: 0 1px 1px #000; }
-.theme-dungeon .level-btn:hover { color: #ffe08a; border-color: #ffe08a; }
+.theme-dungeon .level-btn:hover:not(.completed) {
+    color: #ffe08a;
+    border-color: #ffe08a;
+    background-color: #3f3024;
+    transform: translateY(-5px) scale(1.02); /* Lyfter uppåt */
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25), 0 0 15px rgba(212, 175, 55, 0.1); /* Guld/Eldsglöd */
+}
 .theme-dungeon .level-btn.selected { border-color: #d4af37; color: #ffe08a; background-color: #3f3024; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
-.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #5c4e3e; background-image: none; opacity: 0.4; }
+.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #22c55e; background-color: #1e293b; background-image: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+
+/* Spel-UI & Framsteg */
+.theme-dungeon .game-header { font-family: 'Grenze Gotisch', serif; color: #8e8171; font-size: 1.2rem; }
+.theme-dungeon .lives { filter: drop-shadow(0 0 6px #ee0000); }
 .theme-dungeon .progress-container { background: #000; border: 2px solid #3f3024; border-radius: 4px; }
 .theme-dungeon .progress-bar { background: linear-gradient(90deg, #ee0000, #ff6b6b, #ee0000); background-size: 200% 100%; animation: lavaFlow 2s linear infinite; box-shadow: 0 0 8px #ee0000; border-radius: 0; }
 @keyframes lavaFlow { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
 
-/* Buttons & Text */
+/* Knappar & Text */
 .theme-dungeon .btn.primary { background: linear-gradient(135deg, #ee0000, #990000); color: white; border-radius: 4px; box-shadow: 0 4px 10px #000; }
-.theme-dungeon .btn.primary:hover:not(:disabled) { background: linear-gradient(135deg, #ff1a1a, #ee0000); }
+.theme-dungeon .btn.primary:hover:not(:disabled) { background: linear-gradient(135deg, #ff1a1a, #ee0000); transform: translateY(-1px); }
 .theme-dungeon .btn.secondary { background-color: #3f3024; color: #e0dac9; border: 1px solid #33251a; border-radius: 4px; }
 .theme-dungeon .text-btn { color: #5c4e3e; }
 .theme-dungeon .text-btn:hover { color: #8e8171; }
 .theme-dungeon .question { font-family: 'Grenze Gotisch', serif; font-size: 3.6rem; color: #ffe08a; text-shadow: 0 2px 4px #000; }
 .theme-dungeon .correct { color: #10b981; text-shadow: 0 0 5px rgba(16,185,129,0.4); }
 .theme-dungeon .wrong { color: #ee0000; text-shadow: 0 0 5px rgba(238,0,0,0.4); }
+
+/* Dungeon Vinst (Uppdaterad med snygg fantasy-text) */
+.theme-dungeon .epic-win { border: 5px double #d4af37; box-shadow: 0 0 50px rgba(212, 175, 55, 0.4); }
+.theme-dungeon #victory-title {
+    font-family: 'Metamorphous', serif; /* Ändrat för perfekt Å, Ä, Ö-stöd */
+    font-size: 2.3rem;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #ffe08a, #d4af37, #a67c00);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 5px #000);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+.theme-dungeon #victory-text { font-family: 'Metamorphous', serif; color: #ffe08a !important; text-shadow: 0 1px 3px #000; font-size: 1.15rem; line-height: 1.4; }
+.theme-dungeon #badge-label { color: #8e8171; font-family: 'Metamorphous', serif; }
+
+.theme-dungeon .epic-btn {
+    background: linear-gradient(135deg, #d4af37, #a67c00) !important;
+    color: #1a110a !important;
+    border: 2px solid #ffe08a !important;
+    box-shadow: 0 4px 15px #000;
+    border-radius: 4px !important; /* Ger ett mer rustikt och kantigt utseende */
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+}
+.theme-dungeon .epic-btn:hover { background: linear-gradient(135deg, #ffe08a, #d4af37) !important; transform: translateY(-2px); }
