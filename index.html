@@ -14,16 +14,18 @@
             <h1 class="logo">MATH<span class="accent">QUEST</span></h1>
             <p class="subtitle">Träna hjärnan. Lås upp nivåer.</p>
             <button class="btn primary" onclick="goToScreen('level-screen')">Spela</button>
-            <button class="btn secondary" onclick="alert('Svara rätt på frågorna för att klara nivån!')">Hur man spelar</button>
+            <button class="btn secondary" onclick="alert('Välj en nivå, tryck på Börja och svara rätt på 5 frågor!')">Hur man spelar</button>
         </div>
 
         <div id="level-screen" class="screen hidden">
             <h2>Välj Nivå</h2>
             <div class="level-grid">
-                <button class="level-btn" onclick="startLevel(1)">1<span class="lvl-title">Enkelt</span></button>
-                <button class="level-btn" onclick="startLevel(2)">2<span class="lvl-title">Medel</span></button>
-                <button class="level-btn" onclick="startLevel(3)">3<span class="lvl-title">Expert</span></button>
+                <button class="level-btn" id="lvl-btn-1" onclick="selectLevel(1)">1<span class="lvl-title">Enkelt</span></button>
+                <button class="level-btn" id="lvl-btn-2" onclick="selectLevel(2)">2<span class="lvl-title">Medel</span></button>
+                <button class="level-btn" id="lvl-btn-3" onclick="selectLevel(3)">3<span class="lvl-title">Expert</span></button>
             </div>
+            
+            <button id="start-game-btn" class="btn primary" onclick="startGame()" disabled>Börja Spela</button>
             <button class="btn text-btn" onclick="goToScreen('menu-screen')">← Tillbaka</button>
         </div>
 
@@ -40,7 +42,7 @@
             </div>
 
             <div id="feedback" class="feedback"></div>
-            <button class="btn text-btn" onclick="goToScreen('level-screen')">Avbryt</button>
+            <button class="btn text-btn" onclick="resetAndGoBack()">Avbryt</button>
         </div>
 
     </div>
