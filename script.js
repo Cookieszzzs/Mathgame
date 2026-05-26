@@ -5,9 +5,9 @@ let lives = 3;
 const targetScore = 5; 
 let currentAnswer = 0;
 
-// Laddar sparad progress (vilka nivåer som avklarats samt vilket Nivåpack man kör)
+// Laddar sparad progress från webbläsarens minne
 let completedLevels = JSON.parse(localStorage.getItem('mathgame-progress')) || [];
-let currentPack = parseInt(localStorage.getItem('mathgame-pack')) || 1; // Pack 1 = Normal, Pack 2 = Svår
+let currentPack = parseInt(localStorage.getItem('mathgame-pack')) || 1; 
 
 let isTransitioning = false;
 
@@ -51,7 +51,6 @@ function startGame() {
     isTransitioning = false; 
     updateProgressBar();
     updateLivesUI();
-    // Visar om det är Pack 2 man kör
     levelIndicator.textContent = currentPack === 2 ? `Nivå ${currentLevel} (Pack 2)` : `Nivå ${currentLevel}`;
     goToScreen('game-screen');
     generateQuestion();
@@ -86,7 +85,6 @@ function generateQuestion() {
     isTransitioning = false; 
     answerInput.focus();
 
-    // Sätter en multiplikator. Om vi kör Pack 2 blir talen 2.5 gånger större!
     const difficultyMultiplier = currentPack === 2 ? 2.5 : 1;
 
     switch(currentLevel) {
@@ -99,7 +97,6 @@ function generateQuestion() {
         case 2:
             num1 = Math.floor((Math.random() * (20 + score * 10)) * difficultyMultiplier) + 15;
             num2 = Math.floor((Math.random() * (10 + score * 4)) * difficultyMultiplier) + 2;
-            // Förhindra negativa svar om det inte är Pack 2 med mening
             if (num1 < num2) { let temp = num1; num1 = num2; num2 = temp; }
             currentAnswer = num1 - num2;
             questionElement.textContent = `${num1} - ${num2}`;
@@ -113,7 +110,7 @@ function generateQuestion() {
             break;
         case 4:
             num2 = Math.floor(Math.random() * 5) + 2 + Math.floor(score/2);
-            if (currentPack === 2) num2 += 5; // Större nämnare på nivå 2
+            if (currentPack === 2) num2 += 5;
             currentAnswer = Math.floor(Math.random() * 5) + 2 + Math.floor(score/2);
             if (currentPack === 2) currentAnswer += 6; 
             num1 = num2 * currentAnswer; 
@@ -121,7 +118,10 @@ function generateQuestion() {
             break;
         case 5:
             num1 = Math.floor(Math.random() * 5) + 2 + score; 
-            if (currentPack === 2) num1 += 4; // Högre baser för potenser
+            if (currentPack === 2) num1 += 4;
+            currentAnswer = Math.floor(Math.random() * 11); // Fixade ett tak för potenser
+            if (currentAnswer < 2) currentAnswer = 2;
+            num1 = currentAnswer;
             currentAnswer = num1 * num1;
             questionElement.textContent = `${num1}²`;
             break;
@@ -141,9 +141,7 @@ function generateQuestion() {
 function checkAnswer() {
     const userAnswer = parseInt(answerInput.value);
     if (isNaN(userAnswer)) {
-        isTransitioning = false; 
-        answerInput.disabled = false;
-        submitBtn.disabled = false;
+        isTransitioning = false; answerInput.disabled = false; submitBtn.disabled = false;
         return;
     }
 
@@ -152,7 +150,6 @@ function checkAnswer() {
         updateProgressBar();
         feedbackElement.textContent = "Helt rätt! ✨";
         feedbackElement.className = "feedback correct";
-        
         gameCard.classList.add('success-pop');
         setTimeout(() => gameCard.classList.remove('success-pop'), 400);
         
@@ -164,20 +161,16 @@ function checkAnswer() {
             updateMenuButtons();
             setTimeout(() => {
                 document.getElementById('victory-lives-left').textContent = "❤️".repeat(lives);
-                
                 let humanText = "";
-                // Om vi klarar en nivå i Pack 2 visar vi det ultimata meddelandet vid slutseger
                 if (currentPack === 2 && completedLevels.length >= 6) {
                     humanText = "GRATTIS! DU HAR KOMMIT SÅ LÅNGT SOM MAN KAN KOMMA! MEN SE UPP!! Det kommer att komma helt nya nivåer i framtiden...";
                 } else {
-                    // Standardtexter
                     if (currentTheme === 'cyber') {
                         humanText = lives === 3 ? `Snyggt! Du fullkomligt krossade nivå ${currentLevel} utan att tappa ett enda liv.` : `Grymt kört! Du knäckte koderna och rensade nivå ${currentLevel}.`;
                     } else {
                         humanText = lives === 3 ? `Perfekt runda! Du stormade igenom nivå ${currentLevel} helt oskadd.` : `Riktigt bra kört! Du överlevde fällorna på nivå ${currentLevel}.`;
                     }
                 }
-                
                 document.getElementById('victory-text').textContent = humanText;
                 goToScreen('victory-screen');
             }, 500);
@@ -204,7 +197,6 @@ function checkAnswer() {
 }
 
 function updateMenuButtons() {
-    // Rensar färger först så det uppdateras rätt vid pack-byte
     document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('completed'));
     
     completedLevels.forEach(levelNum => {
@@ -215,20 +207,25 @@ function updateMenuButtons() {
     checkGrandTrophy();
 }
 
-// NY/UPPDATERAD LOGIK: Hanterar pokaler, knappar och texter baserat på Pack 1 eller Pack 2
+// UPPDATERAD: Räknar pokalerna korrekt hela tiden och visar summan
 function checkGrandTrophy() {
     const mapTitle = document.getElementById('map-title');
-    const cornerTrophy = document.getElementById('corner-trophy');
     const nextPackBtn = document.getElementById('next-pack-btn');
+    const trophyDisplay = document.getElementById('global-trophy-count');
     if (!mapTitle) return;
 
-    // Om alla 6 nivåer är avklarade i nuvarande pack
+    // Räkna ut totala pokaler baserat på sparad fas
+    let totalTrophies = 0;
+    if (currentPack === 1) {
+        totalTrophies = completedLevels.length; // Max 6 i fas 1
+    } else if (currentPack === 2) {
+        totalTrophies = 6 + completedLevels.length; // 6 från fas 1 + de nya i fas 2
+    }
+    
+    if (trophyDisplay) trophyDisplay.textContent = totalTrophies;
+
     if (completedLevels.length >= 6) {
-        // Tänd den lilla pokalen i hörnet!
-        if (cornerTrophy) cornerTrophy.classList.remove('hidden');
-        
         if (currentPack === 1) {
-            // Vi är klara med Pack 1. Visa troférubrik och framhäv "Nivå 2"-knappen mitt på skärmen!
             if (currentTheme === 'cyber') {
                 mapTitle.innerHTML = "👑 SYSTEMET ÄR HACKAT! 👑<br><span style='font-size: 1.1rem; color: #00ffcc;'>Master Hacker-status uppnådd.</span>";
                 if(nextPackBtn) { nextPackBtn.textContent = "⚡ Vågar du ta det till nästa nivå? (Pack 2) ⚡"; nextPackBtn.classList.remove('hidden'); }
@@ -237,19 +234,15 @@ function checkGrandTrophy() {
                 if(nextPackBtn) { nextPackBtn.textContent = "⚔️ Vågar du ta det till nästa nivå? (Pack 2) ⚔️"; nextPackBtn.classList.remove('hidden'); }
             }
         } else {
-            // Spelaren har klarat hela Pack 2! Visar det absoluta slutet på kartan
             if (currentTheme === 'cyber') {
                 mapTitle.innerHTML = "🌌 SYSTEMETS GUD 🌌<br><span style='font-size: 1rem; color: #00ffcc;'>DU HAR KOMMIT SÅ LÅNGT SOM MAN KAN KOMMA!<br>MEN SE UPP!! Nya koder laddas snart... 🛸</span>";
             } else {
                 mapTitle.innerHTML = "🔱 GUDOMLIG HJÄLTE 🔱<br><span style='font-size: 1rem; color: #ffe08a;'>DU HAR KOMMIT SÅ LÅNGT SOM MAN KAN KOMMA!<br>MEN SE UPP!! Nya världar öppnas snart... 🎴</span>";
             }
-            if(nextPackBtn) nextPackBtn.classList.add('hidden'); // Gömmer knappen eftersom det inte finns ett pack 3 än
+            if(nextPackBtn) nextPackBtn.classList.add('hidden');
         }
     } else {
-        // Om man inte är klar med alla 6 nivåer
-        if (cornerTrophy) cornerTrophy.classList.add('hidden');
         if (nextPackBtn) nextPackBtn.classList.add('hidden');
-        
         if (currentPack === 2) {
             mapTitle.innerHTML = currentTheme === 'cyber' ? "Välj Utmaning <span style='color: #ef4444;'>[PACK 2]</span>" : "Kartan <span style='color: #ee0000;'>[PACK 2]</span>";
         } else {
@@ -258,25 +251,37 @@ function checkGrandTrophy() {
     }
 }
 
-// NY FUNKTION: Körs när man klickar på "Vågar du ta det till nästa nivå?"
 function activateNextPack() {
     currentPack = 2;
-    completedLevels = []; // Nollställer nivåkorgen för det nya packet!
+    completedLevels = []; 
     localStorage.setItem('mathgame-pack', currentPack);
     localStorage.setItem('mathgame-progress', JSON.stringify(completedLevels));
     
-    // Nollställer gränssnittet och uppdaterar skärmen
     selectedLevel = null;
     startGameBtn.disabled = true;
     startGameBtn.textContent = "Börja Utmaningen";
     document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('selected'));
-    
     updateMenuButtons();
+}
+
+// NY FUNKTION: Startar om nivåerna helt och skickar tillbaka spelaren till Pack 1
+function resetAllProgress() {
+    if (confirm("Vill du starta om dina nivåer och rensa dina pokaler?")) {
+        currentPack = 1;
+        completedLevels = [];
+        localStorage.setItem('mathgame-pack', currentPack);
+        localStorage.setItem('mathgame-progress', JSON.stringify(completedLevels));
+        
+        selectedLevel = null;
+        startGameBtn.disabled = true;
+        startGameBtn.textContent = "Börja Utmaningen";
+        document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('selected'));
+        updateMenuButtons();
+    }
 }
 
 function resetAndGoBack() {
     const levelScreenVisible = !document.getElementById('level-screen').classList.contains('hidden');
-    
     if (levelScreenVisible) {
         goToScreen('menu-screen');
     } else {
@@ -305,12 +310,10 @@ answerInput.addEventListener('keydown', (e) => {
     }
 });
 
-
 // =========================================
 //  POP-UP LOGIK FÖR TEMABYTE
 // =========================================
 let currentTheme = localStorage.getItem('mathgame-theme') || 'cyber';
-
 applyTheme(currentTheme);
 
 function openThemeModal() { themeModal.classList.remove('hidden'); }
