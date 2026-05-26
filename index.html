@@ -3,33 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Quests Dungeons</title>
+    <title>Math Quests</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Plus+Jakarta+Sans:wght@400;600;800&family=Grenze+Gotisch:wght@700;900&family=Metamorphous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="game-container">
-    
+        <button id="theme-toggle" class="theme-toggle-btn">🚀</button>
+        
         <div id="menu-screen" class="screen">
-            <h1 class="logo">MATH<span class="accent"> QUEST DUNGEONS</span></h1>
-            <p class="subtitle">Lås upp nivåer. Klarar du alla nivåer?</p>
-            <button class="btn primary" onclick="goToScreen('level-screen')">Spela</button>
-            <button class="btn secondary" onclick="goToScreen('help-screen')">Hur man spelar</button>
+            <h1 class="logo">MATH QUESTS<br><span class="logo-sub" id="logo-sub">CYBER</span></h1>
+            <p class="subtitle" id="menu-subtitle">Överlista systemet. Knäck koden. Vinn racet.</p>
+            <button class="btn primary" onclick="goToScreen('level-screen')" id="enter-btn">Gå in i systemet</button>
+            <button class="btn secondary" onclick="goToScreen('help-screen')" id="guide-btn">Regler & Manual</button>
         </div>
 
         <div id="help-screen" class="screen hidden">
-            <h2>Hur man spelar</h2>
+            <h2 id="help-title">Spelmanual</h2>
             <div class="card help-card">
-                <p>1. Välj en utmaning i menyn.</p>
-                <p>2. Tryck på "Börja Utmaningen". Du har <strong>3 liv</strong> ❤️</p>
-                <p>3. Talen blir svårare för varje rätt svar!</p>
-                <p>4. Svara rätt på 5 frågor för att vinna. Svarar du fel förlorar du ett liv.</p>
+                <p>1. Välj din utmaning på kartan.</p>
+                <p>2. Du startar varje nivå med <strong>3 liv</strong> ❤️</p>
+                <p>3. Talen skalas upp och blir svårare för varje rätt svar!</p>
+                <p>4. Klara 5 rätta svar för att vinna. Svarar du fel förlorar du ett liv.</p>
             </div>
-            <button class="btn primary" onclick="goToScreen('menu-screen')">Jag fattar!</button>
+            <button class="btn primary" onclick="goToScreen('menu-screen')">Jag är ready!</button>
         </div>
 
         <div id="level-screen" class="screen hidden">
-            <h2>Välj Utmaning</h2>
+            <h2 id="map-title">Välj Nivå</h2>
             <div class="level-grid">
                 <button class="level-btn" id="lvl-btn-1" onclick="selectLevel(1)">1<span class="lvl-title">Addition</span></button>
                 <button class="level-btn" id="lvl-btn-2" onclick="selectLevel(2)">2<span class="lvl-title">Subtraktion</span></button>
@@ -40,7 +44,7 @@
             </div>
             
             <button id="start-game-btn" class="btn primary" onclick="startGame()" disabled>Börja Utmaningen</button>
-            <button class="btn text-btn" onclick="goToScreen('menu-screen')">← Tillbaka</button>
+            <button class="btn text-btn" onclick="resetAndGoBack()">← Tillbaka</button>
         </div>
 
         <div id="game-screen" class="screen hidden">
@@ -55,30 +59,30 @@
             
             <div id="game-card" class="card">
                 <div id="question" class="question">0 + 0</div>
-                <input type="number" id="answer-input" placeholder="Svar..." autocomplete="off">
-                <button id="submit-btn" class="btn primary">Skicka Svar</button>
+                <input type="number" id="answer-input" placeholder="Ditt svar..." autocomplete="off">
+                <button id="submit-btn" class="btn primary">Skicka svar</button>
             </div>
 
             <div id="feedback" class="feedback"></div>
-            <button class="btn text-btn" onclick="resetAndGoBack()">Avbryt</button>
+            <button class="btn text-btn" onclick="resetAndGoBack()">Ge upp och fly</button>
         </div>
 
         <div id="victory-screen" class="screen hidden">
             <div class="victory-card">
-                <div class="trophy">🏆</div>
-                <h2>Nivå Avklarad!</h2>
-                <p id="victory-text">Du krossade nivån!</p>
-                <button class="btn primary" onclick="resetAndGoBack()">Tillbaka till menyer</button>
+                <div class="end-icon" id="victory-icon">🏆</div>
+                <h2 id="victory-title">Utmaningen avklarad!</h2>
+                <p id="victory-text">Du har tagit dig igenom rummet!</p>
+                <button class="btn primary" onclick="resetAndGoBack()">Tillbaka till menyn</button>
             </div>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
             <div class="victory-card">
-                <div class="skull">💀</div>
-                <h2 class="wrong">Slut på liv!</h2>
-                <p class="subtitle" style="margin-bottom: 24px;">Utmaningen blev för svår denna gång.</p>
+                <div class="end-icon" id="fail-icon">💥</div>
+                <h2 class="wrong" id="fail-title">Systemfel...</h2>
+                <p class="subtitle" id="fail-text" style="margin-bottom: 24px;">Dina liv tog slut.</p>
                 <button class="btn primary" onclick="retryCurrentLevel()">Försök Igen</button>
-                <button class="btn text-btn" onclick="resetAndGoBack()">Tillbaka till menyer</button>
+                <button class="btn text-btn" onclick="resetAndGoBack()">Avbryt uppdraget</button>
             </div>
         </div>
 
