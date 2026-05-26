@@ -1,48 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-
+/* --- GEMENSAMMA GRUNDSTILAR --- */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0; padding: 0;
 }
 
 body {
-    background-color: #060913;
-    color: #f8fafc;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     position: relative;
-}
-
-/* AMBIENT BACKGROUND GLOWS (Häftiga ljusbubblor i bakgrunden) */
-body::before, body::after {
-    content: "";
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(0,0,0,0) 70%);
-    filter: blur(40px);
-    z-index: 0;
-    animation: floatGlow 8s infinite alternate ease-in-out;
-}
-body::before { top: 10%; left: 10%; }
-body::after { bottom: 10%; right: 10%; background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(0,0,0,0) 70%); animation-delay: -4s; }
-
-@keyframes floatGlow {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(30px) scale(1.1); }
+    transition: background 0.5s ease;
 }
 
 .game-container {
     width: 100%;
     max-width: 440px;
     padding: 24px;
-    z-index: 1; /* Läggs ovanpå bakgrundsljuset */
+    z-index: 1;
+    position: relative;
 }
 
 .screen {
@@ -56,240 +33,167 @@ body::after { bottom: 10%; right: 10%; background: radial-gradient(circle, rgba(
 .hidden { display: none !important; }
 
 @keyframes screenEnter {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    from { opacity: 0; transform: scale(0.95) translateY(15px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* LOGO OCH TITLAR */
-.logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 900;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4));
+/* TEMA-KNAPPEN (Snygg flytande knapp högst upp till höger) */
+.theme-toggle-btn {
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 1.4rem;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
-.accent { color: #38bdf8; font-family: 'Orbitron', sans-serif; }
-.subtitle { color: #64748b; margin-bottom: 40px; font-size: 1.05rem; text-align: center; font-weight: 600; }
-h2 { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 24px; font-weight: 800; letter-spacing: 1px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.theme-toggle-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    background: rgba(255, 255, 255, 0.2);
+}
 
-/* GLASSMORPHISM CARD (Det frostade glaset) */
 .card {
-    background: rgba(17, 24, 39, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     width: 100%;
-    padding: 36px 28px;
-    border-radius: 28px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255,255,255,0.1);
+    padding: 32px 24px;
+    border-radius: 24px;
     text-align: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
 }
 
-/* NIVÅ-GRID */
 .level-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: 12px;
     width: 100%;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
 }
 
 .level-btn {
-    background: rgba(31, 41, 55, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
-    color: #94a3b8;
-    padding: 20px;
-    border-radius: 20px;
-    font-size: 1.6rem;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
+    padding: 18px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
 }
+.level-btn .lvl-title { font-size: 0.75rem; margin-top: 4px; font-weight: 600; }
 
-.level-btn:hover {
-    color: #fff;
-    border-color: rgba(56, 189, 248, 0.4);
-    background: rgba(56, 189, 248, 0.05);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
-}
-
-.level-btn.selected {
-    border-color: #38bdf8;
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.15);
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), inset 0 0 10px rgba(56, 189, 248, 0.2);
-}
-
-.level-btn.completed {
-    border-color: #10b981;
-    color: #10b981;
-    background: rgba(16, 185, 129, 0.05);
-    opacity: 0.6;
-}
-.level-btn.completed.selected { opacity: 1; border-color: #38bdf8; color: #38bdf8; }
-
-.lvl-title { font-size: 0.75rem; color: #64748b; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; margin-top: 6px; letter-spacing: 0px; }
-.level-btn:hover .lvl-title { color: #94a3b8; }
-.level-btn.selected .lvl-title { color: #7dd3fc; }
-
-/* PROGRESS BAR M MED NEON-STRIPES */
 .progress-container {
     width: 100%;
     height: 12px;
-    background: rgba(17, 24, 39, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 99px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     overflow: hidden;
 }
-
 .progress-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #38bdf8, #a855f7);
-    background-size: 30px 30px;
-    background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent);
-    animation: progressAnimate 1s linear infinite;
+    width: 0%; height: 100%;
     border-radius: 99px;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
-    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes progressAnimate {
-    from { background-position: 0 0; }
-    to { background-position: 30px 0; }
+.game-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 700; }
+.logo { font-weight: 900; text-align: center; line-height: 1.1; margin-bottom: 8px; }
+.subtitle { margin-bottom: 40px; font-size: 1rem; text-align: center; }
+input[type="number"] { width: 100%; padding: 16px; border-radius: 14px; text-align: center; outline: none; margin-bottom: 16px; font-size: 1.6rem; font-weight: 800; transition: all 0.2s ease; }
+.btn { width: 100%; padding: 16px; border-radius: 14px; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: all 0.2s ease; text-transform: uppercase; }
+.btn:disabled { cursor: not-allowed; transform: none !important; box-shadow: none !important; opacity: 0.3; }
+.text-btn { background: transparent !important; margin-top: 12px; box-shadow: none !important; }
+.feedback { margin-top: 16px; min-height: 24px; font-weight: 800; font-size: 1.2rem; }
+.end-icon { font-size: 5.5rem; margin-bottom: 10px; animation: floatAnim 1s infinite alternate ease-in-out; }
+@keyframes floatAnim { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+
+/* POP OCH SHAKE ANIMATIONER */
+.success-pop { animation: popEffect 0.3s ease; }
+@keyframes popEffect { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+.shake { animation: shakeEffect 0.3s ease; }
+@keyframes shakeEffect { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+
+/* =========================================
+   TEMA 1: CYBER-NEON (Framtid / Sci-Fi)
+   ========================================= */
+body.theme-cyber {
+    background-color: #060913;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
-
-.game-header { width: 100%; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; margin-bottom: 16px; font-weight: 700; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
-.lives { letter-spacing: 4px; filter: drop-shadow(0 0 8px #ef4444); font-size: 1.2rem; }
-
-/* SPELET OCH FRÅGAN */
-.question {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 4rem;
-    font-weight: 900;
-    margin-bottom: 28px;
-    letter-spacing: -1px;
-    background: linear-gradient(to bottom, #ffffff, #cbd5e1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.5));
+body.theme-cyber::before {
+    content: ""; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0,0,0,0) 70%); top: 10%; left: 10%; filter: blur(30px);
 }
+.theme-cyber .logo { font-family: 'Orbitron', sans-serif; font-size: 3.2rem; background: linear-gradient(135deg, #fff, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(56,189,248,0.3)); }
+.theme-cyber .logo-sub { color: #38bdf8; font-family: 'Orbitron', sans-serif; }
+.theme-cyber .subtitle { color: #64748b; }
+.theme-cyber h2 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 20px; color: #fff; }
+.theme-cyber .game-header { font-family: 'Orbitron', sans-serif; color: #64748b; }
+.theme-cyber .lives { filter: drop-shadow(0 0 8px #ef4444); }
 
-input[type="number"] {
-    width: 100%;
-    padding: 18px;
-    background: rgba(7, 10, 19, 0.6);
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 800;
-    text-align: center;
-    outline: none;
-    margin-bottom: 20px;
-    transition: all 0.2s ease;
+.theme-cyber .card { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.theme-cyber input[type="number"] { background: rgba(7, 10, 19, 0.6); border: 2px solid rgba(255, 255, 255, 0.08); color: white; font-family: 'Orbitron', sans-serif; }
+.theme-cyber input[type="number"]:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+
+.theme-cyber .level-btn { background: rgba(31, 41, 55, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; }
+.theme-cyber .level-btn:hover { color: #fff; border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+.theme-cyber .level-btn.selected { border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+.theme-cyber .level-btn.completed { border-color: #10b981; color: #10b981; opacity: 0.5; }
+.theme-cyber .progress-container { background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.05); }
+.theme-cyber .progress-bar { background: linear-gradient(90deg, #38bdf8, #a855f7); box-shadow: 0 0 10px #38bdf8; }
+
+.theme-cyber .btn.primary { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #060913; box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+.theme-cyber .btn.primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.5); }
+.theme-cyber .btn.secondary { background: rgba(31, 41, 55, 0.6); color: white; border: 1px solid rgba(255,255,255,0.08); }
+.theme-cyber .text-btn { color: #475569; }
+.theme-cyber .text-btn:hover { color: #94a3b8; }
+.theme-cyber .question { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; color: white; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+.theme-cyber .correct { color: #10b981; text-shadow: 0 0 10px #10b981; }
+.theme-cyber .wrong { color: #ef4444; text-shadow: 0 0 10px #ef4444; }
+
+
+/* =========================================
+   TEMA 2: DUNGEONS (Fantasy / Mörker)
+   ========================================= */
+body.theme-dungeon {
+    background-color: #1a110a;
+    background-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%), url('https://www.transparenttextures.com/patterns/dark-rock.png');
+    color: #e0dac9;
+    font-family: 'Metamorphous', serif;
 }
-input[type="number"]:focus { 
-    border-color: #38bdf8; 
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.1);
-    background: rgba(7, 10, 19, 0.9);
+body.theme-dungeon::before {
+    content: ""; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(253, 186, 116, 0.08) 0%, rgba(0,0,0,0) 50%); top: -10%; left: -10%; animation: flicker 3s infinite alternate;
 }
+@keyframes flicker { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-/* KNAPPAR MED "SHEEN" (Ljusreflex-effekten) */
-.btn {
-    width: 100%;
-    padding: 18px;
-    border-radius: 18px;
-    font-size: 1.1rem;
-    font-weight: 800;
-    cursor: pointer;
-    border: none;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
+.theme-dungeon .logo { font-family: 'Grenze Gotisch', serif; font-size: 3.2rem; background: linear-gradient(180deg, #ffe08a, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
+.theme-dungeon .logo-sub { background: linear-gradient(180deg, #ff6b6b, #ee0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
+.theme-dungeon .subtitle { color: #8e8171; }
+.theme-dungeon h2 { font-family: 'Grenze Gotisch', serif; font-size: 2.2rem; color: #d4af37; text-shadow: 0 2px 2px #000; }
+.theme-dungeon .game-header { font-family: 'Grenze Gotisch', serif; color: #8e8171; font-size: 1.2rem; }
+.theme-dungeon .lives { filter: drop-shadow(0 0 6px #ee0000); }
 
-.primary { 
-    background: linear-gradient(135deg, #38bdf8, #0284c7); 
-    color: #060913; 
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
-}
+.theme-dungeon .card { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/dark-rock.png'); border: 4px solid #3f3024; box-shadow: 0 15px 35px #000, inset 0 0 20px rgba(0,0,0,0.6); border-radius: 8px; }
+.theme-dungeon .help-card { background-color: #c9b999; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); color: #33251a; border: 2px solid #8e8171; }
+.theme-dungeon .help-card p { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; margin-bottom: 6px; }
+.theme-dungeon input[type="number"] { background: #1a110a; border: 2px solid #33251a; color: #ffe08a; font-family: 'Grenze Gotisch', serif; border-radius: 4px; }
+.theme-dungeon input[type="number"]:focus { border-color: #d4af37; }
 
-/* Sheen-ljuslinjen */
-.primary::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -60%;
-    width: 30%; height: 200%;
-    background: rgba(255, 255, 255, 0.35);
-    transform: rotate(30deg);
-    transition: none;
-}
-.primary:hover::after {
-    left: 140%;
-    transition: all 0.6s ease-in-out;
-}
+.theme-dungeon .level-btn { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); border: 2px solid #3f3024; color: #a67c00; font-family: 'Grenze Gotisch', serif; font-size: 1.8rem; font-weight: 700; border-radius: 6px; text-shadow: 0 1px 1px #000; }
+.theme-dungeon .level-btn:hover { color: #ffe08a; border-color: #ffe08a; }
+.theme-dungeon .level-btn.selected { border-color: #d4af37; color: #ffe08a; background-color: #3f3024; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
+.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #5c4e3e; background-image: none; opacity: 0.4; }
+.theme-dungeon .progress-container { background: #000; border: 2px solid #3f3024; border-radius: 4px; }
+.theme-dungeon .progress-bar { background: linear-gradient(90deg, #ee0000, #ff6b6b, #ee0000); background-size: 200% 100%; animation: lavaFlow 2s linear infinite; box-shadow: 0 0 8px #ee0000; border-radius: 0; }
+@keyframes lavaFlow { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
 
-.primary:hover:not(:disabled) { 
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
-}
-
-.btn:disabled { background: rgba(255,255,255,0.05); color: #4b5563; border: 1px solid rgba(255,255,255,0.02); cursor: not-allowed; box-shadow: none; transform: none; }
-.btn:disabled::after { display: none; }
-
-.secondary { background: rgba(31, 41, 55, 0.5); color: #f8fafc; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); }
-.secondary:hover { background: rgba(55, 65, 81, 0.8); border-color: rgba(255,255,255,0.2); }
-.text-btn { background: transparent; color: #475569; margin-top: 14px; font-weight: 600; }
-.text-btn:hover { color: #94a3b8; }
-
-/* FEEDBACK-TEXT */
-.feedback { margin-top: 20px; min-height: 28px; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
-.correct { color: #10b981; text-shadow: 0 0 15px rgba(16, 185, 129, 0.6); animation: textPulse 0.3s ease; }
-.wrong { color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.6); animation: textPulse 0.3s ease; }
-
-@keyframes textPulse {
-    0% { transform: scale(0.8); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* TRÄFF- ANIMATIONER */
-.success-pop { animation: successFlash 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes successFlash {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.04); border-color: #10b981; box-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
-    100% { transform: scale(1); }
-}
-
-.shake { animation: intenseShake 0.4s ease-in-out; }
-@keyframes intenseShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-12px); border-color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
-    40%, 80% { transform: translateX(12px); border-color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
-}
-
-/* VINST & GAME OVER-SKÄRMAR */
-.victory-card { text-align: center; padding: 10px; }
-.trophy { font-size: 6rem; filter: drop-shadow(0 0 25px #eab308); animation: arcadeBounce 1s infinite alternate ease-in-out; }
-.skull { font-size: 6rem; filter: drop-shadow(0 0 25px #ef4444); animation: arcadeBounce 1s infinite alternate ease-in-out; }
-
-@keyframes arcadeBounce { 
-    from { transform: translateY(0) rotate(-3deg); } 
-    to { transform: translateY(-20px) rotate(3deg); } 
-}
+.theme-dungeon .btn.primary { background: linear-gradient(135deg, #ee0000, #990000); color: white; border-radius: 4px; box-shadow: 0 4px 10px #000; }
+.theme-dungeon .btn.primary:hover:not(:disabled) { background: linear-gradient(135deg, #ff1a1a, #ee0000); }
+.theme-dungeon .btn.secondary { background-color: #3f3024; color: #e0dac9; border: 1px solid #33251a; border-radius: 4px; }
+.theme-dungeon .text-btn { color: #5c4e3e; }
+.theme-dungeon .text-btn:hover { color: #8e8171; }
+.theme-dungeon .question { font-family: 'Grenze Gotisch', serif; font-size: 3.6rem; color: #ffe08a; text-shadow: 0 2px 4px #000; }
+.theme-dungeon .correct { color: #10b981; text-shadow: 0 0 5px rgba(16,185,129,0.4); }
+.theme-dungeon .wrong { color: #ee0000; text-shadow: 0 0 5px rgba(238,0,0,0.4); }
