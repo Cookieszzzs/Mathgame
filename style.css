@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #0f172a; /* Mörk, modern slate-färg */
+    background-color: #0f172a;
     color: #f8fafc;
     height: 100vh;
     display: flex;
@@ -20,7 +20,6 @@ body {
     padding: 20px;
 }
 
-/* Skärmhantering */
 .screen {
     display: flex;
     flex-direction: column;
@@ -32,7 +31,6 @@ body {
     display: none !important;
 }
 
-/* Meny Detaljer */
 .logo {
     font-size: 3rem;
     font-weight: 800;
@@ -41,13 +39,12 @@ body {
 }
 
 .accent {
-    color: #38bdf8; /* Cool ljusblå färg */
+    color: #38bdf8;
 }
 
 .subtitle {
     color: #94a3b8;
     margin-bottom: 40px;
-    font-size: 1rem;
 }
 
 h2 {
@@ -56,7 +53,6 @@ h2 {
     font-weight: 700;
 }
 
-/* Nivå-grid */
 .level-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -81,9 +77,14 @@ h2 {
 }
 
 .level-btn:hover {
+    border-color: #475569;
+}
+
+/* STIL FÖR VALD NIVÅ */
+.level-btn.selected {
     border-color: #38bdf8;
-    background: #1e293b;
-    transform: translateY(-2px);
+    background: rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
 }
 
 .lvl-title {
@@ -93,14 +94,12 @@ h2 {
     margin-top: 5px;
 }
 
-/* Spelkortet */
 .game-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
     color: #94a3b8;
     margin-bottom: 15px;
-    font-size: 0.95rem;
 }
 
 .card {
@@ -117,10 +116,8 @@ h2 {
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 30px;
-    letter-spacing: -1px;
 }
 
-/* Input & Knappar */
 input[type="number"] {
     width: 100%;
     padding: 14px;
@@ -132,7 +129,6 @@ input[type="number"] {
     text-align: center;
     outline: none;
     margin-bottom: 20px;
-    transition: border-color 0.2s;
 }
 
 input[type="number"]:focus {
@@ -160,31 +156,31 @@ input[type="number"]:focus {
     background: #0ea5e9;
 }
 
+/* STIL FÖR LÅST BUTTON (Innan man valt nivå) */
+.btn:disabled {
+    background: #1e293b;
+    color: #475569;
+    border: 1px solid #334155;
+    cursor: not-allowed;
+}
+
 .secondary {
     background: #334155;
     color: #f8fafc;
 }
 
-.secondary:hover {
-    background: #475569;
-}
-
 .text-btn {
     background: transparent;
     color: #64748b;
-    margin-top: 15px;
 }
 
 .text-btn:hover {
     color: #94a3b8;
 }
 
-/* Feedback */
 .feedback {
     margin-top: 20px;
     min-height: 25px;
-    font-size: 1rem;
-    font-weight: 500;
 }
 .correct { color: #34d399; }
 .wrong { color: #f87171; }
