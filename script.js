@@ -6,7 +6,7 @@ const targetScore = 5;
 let currentAnswer = 0;
 let completedLevels = [];
 
-// VÅR COLLISION-SPÄRR
+// BUGGFIX-SPÄRR: Hindrar spelaren från att spamma Enter
 let isTransitioning = false;
 
 const answerInput = document.getElementById('answer-input');
@@ -72,12 +72,13 @@ function updateProgressBar() {
     progressBar.style.width = `${percentage}%`;
 }
 
+// PROGRESSIV SVÅRIGHETSGRAD (Talen skalar upp baserat på din nuvarande 'score')
 function generateQuestion() {
     let num1, num2;
     feedbackElement.textContent = "";
     answerInput.value = "";
     
-    // VIKTIGT: Aktivera fältet och lås upp spärren HÄR när nästa fråga är helt redo
+    // Aktivera fältet och lås upp spärren när nästa fråga är helt redo
     answerInput.disabled = false;
     submitBtn.disabled = false;
     isTransitioning = false; 
@@ -85,37 +86,37 @@ function generateQuestion() {
     answerInput.focus();
 
     switch(currentLevel) {
-        case 1: 
+        case 1: // Addition
             num1 = Math.floor(Math.random() * (10 + score * 6)) + 2; 
             num2 = Math.floor(Math.random() * (10 + score * 6)) + 2;
             currentAnswer = num1 + num2;
             questionElement.textContent = `${num1} + ${num2}`;
             break;
-        case 2: 
+        case 2: // Subtraktion
             num1 = Math.floor(Math.random() * (20 + score * 10)) + 15;
             num2 = Math.floor(Math.random() * (10 + score * 4)) + 2;
             currentAnswer = num1 - num2;
             questionElement.textContent = `${num1} - ${num2}`;
             break;
-        case 3: 
+        case 3: // Multiplikation
             const maxTable = 5 + score; 
             num1 = Math.floor(Math.random() * (maxTable - 2 + 1)) + 2;
             num2 = Math.floor(Math.random() * 8) + 2;
             currentAnswer = num1 * num2;
             questionElement.textContent = `${num1} × ${num2}`;
             break;
-        case 4: 
+        case 4: // Division
             num2 = Math.floor(Math.random() * 5) + 2 + Math.floor(score/2); 
             currentAnswer = Math.floor(Math.random() * 5) + 2 + Math.floor(score/2);
             num1 = num2 * currentAnswer; 
             questionElement.textContent = `${num1} ÷ ${num2}`;
             break;
-        case 5: 
+        case 5: // Potenser
             num1 = Math.floor(Math.random() * 5) + 2 + score; 
             currentAnswer = num1 * num1;
             questionElement.textContent = `${num1}²`;
             break;
-        case 6: 
+        case 6: // Kaosläge
             const modes = ['+', '-', '×'];
             const randomMode = modes[Math.floor(Math.random() * modes.length)];
             num1 = Math.floor(Math.random() * (30 + score * 12)) + 5;
@@ -131,7 +132,9 @@ function generateQuestion() {
 function checkAnswer() {
     const userAnswer = parseInt(answerInput.value);
     if (isNaN(userAnswer)) {
-        isTransitioning = false; // Lås upp om de tryckte Enter utan att skriva något
+        isTransitioning = false; // Släpp spärren om de tryckte Enter utan att skriva något
+        answerInput.disabled = false;
+        submitBtn.disabled = false;
         return;
     }
 
@@ -154,7 +157,6 @@ function checkAnswer() {
                 goToScreen('victory-screen');
             }, 500);
         } else {
-            // Vänta med att ladda nästa fråga (spärren är aktiv under tiden)
             setTimeout(generateQuestion, 600);
         }
     } else {
@@ -172,7 +174,7 @@ function checkAnswer() {
                 goToScreen('game-over-screen');
             }, 500);
         } else {
-            // Om de svarade fel, lås upp efter 400ms så de kan korrigera sitt svar
+            // Om de svarade fel, lås upp fältet igen efter skakningen (400ms) så de kan försöka igen
             setTimeout(() => {
                 answerInput.disabled = false;
                 submitBtn.disabled = false;
@@ -200,18 +202,17 @@ function resetAndGoBack() {
     goToScreen('level-screen');
 }
 
-// --- DET HÄR ÄR DEN NYA ULTRA-SÄKRA LYSSNAREN ---
+// --- ULTRA-SÄKER INPUT-HANTERING ---
 
 function handleInputSubmit() {
-    // Om spärren är aktiv, TVÄRNEKA alla vidare tryck direkt här
+    // Om spärren redan är aktiv (vi väntar på nästa fråga), blockera klicket totalt!
     if (isTransitioning) return; 
     
-    // Annars, lås dörren OMEDELBART
+    // Lås dörren omedelbart
     isTransitioning = true;
     answerInput.disabled = true;
     submitBtn.disabled = true;
     
-    // Kör logiken
     checkAnswer();
 }
 
@@ -219,8 +220,7 @@ submitBtn.addEventListener('click', handleInputSubmit);
 
 answerInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-        // Förhindra webbläsarens standardbeteende så att inget skickas dubbelt
-        e.preventDefault(); 
+        e.preventDefault(); // Stoppa webbläsarens inbyggda dubbelavfyrning
         handleInputSubmit();
     }
 });
