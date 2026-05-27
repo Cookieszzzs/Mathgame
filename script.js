@@ -22,6 +22,48 @@ const progressBar = document.getElementById('progress-bar');
 const gameCard = document.getElementById('game-card');
 const themeModal = document.getElementById('theme-modal');
 
+// =========================================================================
+// 100% BULLETPROOF LEVEL CLEAR LJUD (Genererar retro-arkadljud med kod!)
+// =========================================================================
+function playLevelClearSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        
+        const ctx = new AudioContext();
+        const now = ctx.currentTime;
+
+        // Funktion för att spela en enskild ton (syntetisk)
+        function playTone(freq, startTime, duration) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            // 'triangle' ger ett mjukt, skönt Nintendo/arkad-ljud
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(freq, startTime);
+            
+            // Hantera volym och fade-out (så det inte klickar i högtalarna)
+            gain.gain.setValueAtTime(0.08, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        }
+
+        // En glad, uppåtgående Duolingo/Arkad-fanfar (C-E-G-C)
+        playTone(523.25, now, 0.15);        // C5
+        playTone(659.25, now + 0.12, 0.15); // E5
+        playTone(783.99, now + 0.24, 0.15); // G5
+        playTone(1046.50, now + 0.36, 0.5); // C6 (Sista långa vinsttonen!)
+
+    } catch (e) {
+        console.log("Web Audio API stöds inte i denna webbläsare", e);
+    }
+}
+
 function goToScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.add('hidden');
@@ -159,6 +201,10 @@ function checkAnswer() {
                 localStorage.setItem('mathgame-progress', JSON.stringify(completedLevels));
             }
             updateMenuButtons();
+            
+            // TRIGGA DET NYA BULLETPROOF-LJUDET HÄR 🔊
+            playLevelClearSound();
+
             setTimeout(() => {
                 document.getElementById('victory-lives-left').textContent = "❤️".repeat(lives);
                 let humanText = "";
