@@ -1,212 +1,675 @@
-/* =========================================
-   1. GEMENSAMMA GRUNDSTILAR & RESET
-   ========================================= */
+/* =========================================================================
+   1. GLOBAL RESETS & CORE STYLES
+   ========================================================================= */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+    transition: background 0.5s ease, color 0.3s ease;
     overflow-x: hidden;
-    position: relative;
-    transition: background 0.5s ease, color 0.5s ease;
 }
 
-.game-container {
+.container {
     width: 100%;
-    max-width: 480px;
-    padding: 24px;
-    text-align: center;
+    max-width: 500px;
+    min-height: 600px;
+    background: var(--bg-container);
+    border: 3px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--container-shadow);
+    display: flex;
+    flex-direction: column;
     position: relative;
-    z-index: 2;
+    backdrop-filter: blur(10px);
 }
 
-/* Skärm-hantering */
 .screen {
     width: 100%;
-    animation: fadeIn 0.4s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .hidden {
     display: none !important;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+/* =========================================================================
+   2. THEME DEFINITIONS (CYBER & DUNGEONS)
+   ========================================================================= */
+/* CYBER THEME (DEFAULT) */
+body.theme-cyber {
+    background: radial-gradient(circle at center, #0b0f19 0%, #020408 100%);
+    color: #ffffff;
+    --bg-container: rgba(13, 20, 35, 0.85);
+    --border-color: #00ffcc;
+    --container-shadow: 0 0 30px rgba(0, 255, 204, 0.2), inset 0 0 15px rgba(0, 255, 204, 0.1);
+    --btn-primary: linear-gradient(45deg, #00ffcc, #0099ff);
+    --btn-secondary: rgba(255, 255, 255, 0.08);
+    --btn-text: #020408;
 }
 
-/* Allmänna Kort-stilar */
-.card, .victory-card, .modal-card {
-    padding: 24px;
-    margin-bottom: 24px;
-    transition: all 0.3s ease;
+/* DUNGEONS THEME */
+body.theme-dungeons {
+    background: radial-gradient(circle at center, #2c1d11 0%, #110a05 100%);
+    color: #f5edd8;
+    --bg-container: rgba(43, 32, 22, 0.9);
+    --border-color: #d35400;
+    --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(211, 84, 0, 0.15);
+    --btn-primary: linear-gradient(45deg, #d35400, #c0392b);
+    --btn-secondary: rgba(0, 0, 0, 0.3);
+    --btn-text: #ffffff;
 }
 
-/* Allmänna Knappar */
-.btn {
+/* =========================================================================
+   3. BUTTONS & UI COMPONENTS
+   ========================================================================= */
+.action-btn {
     width: 100%;
-    padding: 16px;
-    border: none;
+    padding: 15px;
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 12px;
     cursor: pointer;
-    margin-bottom: 12px;
     transition: all 0.2s ease;
-    display: inline-block;
-    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.btn:disabled {
-    opacity: 0.3;
+/* Standard primärknapp */
+.theme-cyber .action-btn:not(.menu-btn-sub):not(.back-btn):not(.battle-mode-btn):not(.reset-progress-btn) {
+    background: var(--btn-primary);
+    color: var(--btn-text);
+    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+}
+
+.theme-dungeons .action-btn:not(.menu-btn-sub):not(.back-btn):not(.battle-mode-btn):not(.reset-progress-btn) {
+    background: var(--btn-primary);
+    color: var(--btn-text);
+    border: 2px solid #e67e22;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.action-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.action-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.action-btn:disabled {
+    background: #333333 !important;
+    color: #777777 !important;
+    box-shadow: none !important;
     cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.text-btn {
-    background: none !important;
     border: none !important;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-top: 8px;
-    box-shadow: none !important;
+    opacity: 0.5;
 }
 
-.text-btn:hover {
-    text-decoration: underline;
-    transform: none !important;
+/* Back-knapp */
+.back-btn {
+    background: var(--btn-secondary);
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+.back-btn:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-/* Nivåväljaren (Grid) */
+/* =========================================================================
+   4. HUVUDMENY (MENU SCREEN)
+   ========================================================================= */
+.logo-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.main-logo {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    line-height: 1;
+}
+
+.theme-cyber .main-logo {
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+.theme-dungeons .main-logo {
+    color: #e67e22;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.logo-sub {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 6px;
+    margin-top: 5px;
+}
+
+.theme-cyber .logo-sub { color: #ff007f; text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); }
+.theme-dungeons .logo-sub { color: #bdc3c7; }
+
+.subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 50px;
+    padding: 0 10px;
+    line-height: 1.4;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.menu-btn-sub {
+    background: var(--btn-secondary);
+    color: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.menu-btn-sub:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================================
+   5. KARTAN / NIVÅVAL (LEVEL SCREEN)
+   ========================================================================= */
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.trophy-counter {
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: rgba(0,0,0,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+#map-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+}
+
 .level-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin: 18px 0 24px 0;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 .level-btn {
-    padding: 18px;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
+    color: inherit;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.level-btn .lvl-type {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    opacity: 0.6;
+}
+
+.level-btn:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Markerad nivå */
+.theme-cyber .level-btn.selected {
+    border-color: #00ffcc;
+    background: rgba(0, 255, 204, 0.15);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+}
+.theme-dungeons .level-btn.selected {
+    border-color: #e67e22;
+    background: rgba(230, 126, 34, 0.2);
+    box-shadow: 0 0 15px rgba(230, 126, 34, 0.4);
+}
+
+/* Klarad nivå */
+.theme-cyber .level-btn.completed {
+    background: linear-gradient(135deg, rgba(0,255,150,0.2), rgba(0,150,255,0.2));
+    border-color: #00ff99;
+}
+.theme-dungeons .level-btn.completed {
+    background: linear-gradient(135deg, rgba(46,204,113,0.3), rgba(39,174,96,0.3));
+    border-color: #2ecc71;
+}
+
+/* EPISK BATTLE MODE-KNAPP */
+.battle-mode-btn {
+    margin-top: 15px;
+    color: #fff !important;
+}
+.theme-cyber .battle-mode-btn {
+    background: linear-gradient(45deg, #ff007f, #7f00ff) !important;
+    text-shadow: 0 0 5px #fff;
+    box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+}
+.theme-dungeons .battle-mode-btn {
+    background: linear-gradient(45deg, #d35400, #c0392b) !important;
+    border: 2px solid #f1c40f !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.reset-progress-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.4;
+    font-size: 0.8rem;
+    margin-top: 25px;
+    cursor: pointer;
+    text-decoration: underline;
+    align-self: center;
+}
+.reset-progress-btn:hover { opacity: 0.8; }
+
+/* =========================================================================
+   6. BATTLE MODE ARENA STYLES
+   ========================================================================= */
+.battle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#battle-stage-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* HP-mätare design */
+.hp-bar-wrapper {
+    width: 100%;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin-top: 5px;
+}
+
+.hp-bar {
+    height: 100%;
+    width: 100%;
+    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.enemy-hp {
+    background: linear-gradient(90deg, #ff3333, #ff6666);
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+}
+
+.player-hp {
+    background: linear-gradient(90deg, #00ff66, #33ff99);
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+}
+
+.hp-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Fiende-container */
+.enemy-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.enemy-avatar {
+    font-size: 3rem;
+    margin-right: 15px;
+    animation: floatingEnemy 3s ease-in-out infinite;
+}
+
+.enemy-info {
+    flex-grow: 1;
+}
+
+/* Stridszonen */
+.battle-zone {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.battle-feedback {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #ffe08a;
+    line-height: 1.4;
+    max-width: 90%;
+}
+
+.battle-question {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+#battle-answer-input {
+    width: 120px;
+    padding: 12px;
+    font-size: 1.3rem;
+    text-align: center;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    margin-right: 10px;
+}
+
+/* Vapen-grid */
+.inventory-section h4 {
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.weapon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.weapon-card {
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px 5px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-weight: 800;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+    transition: all 0.2s ease;
+    color: white;
 }
 
-.lvl-title {
-    font-size: 0.8rem;
-    font-weight: 400;
-    margin-top: 4px;
-    opacity: 0.8;
+.weapon-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-/* Spelmekanik (Input, Framsteg) */
-.progress-container {
-    width: 100%;
-    height: 12px;
-    margin-bottom: 24px;
-    overflow: hidden;
+.weapon-card .weapon-icon { font-size: 1.8rem; margin-bottom: 5px; }
+.weapon-card .weapon-name { font-weight: bold; font-size: 0.85rem; margin-bottom: 2px; text-align: center;}
+.weapon-card .weapon-desc { font-size: 0.65rem; opacity: 0.6; text-align: center; }
+
+/* Tema-unika effekter för vapen (CYBER) */
+.theme-cyber .weapon-card.light:hover { border-color: #00ffcc; box-shadow: 0 0 10px rgba(0, 255, 204, 0.4); }
+.theme-cyber .weapon-card.medium:hover { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+.theme-cyber .weapon-card.heavy:hover { border-color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+
+/* Tema-unika effekter för vapen (DUNGEONS) */
+.theme-dungeons .weapon-card.light:hover { border-color: #ff9f43; box-shadow: 0 0 10px rgba(255, 159, 67, 0.4); }
+.theme-dungeons .weapon-card.medium:hover { border-color: #ee5253; box-shadow: 0 0 10px rgba(238, 82, 83, 0.4); }
+.theme-dungeons .weapon-card.heavy:hover { border-color: #10ac84; box-shadow: 0 0 10px rgba(16, 172, 132, 0.4); }
+
+.player-battle-hud {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+/* =========================================================================
+   7. STANDARDSPELET (GAME SCREEN)
+   ========================================================================= */
 .game-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    font-size: 1.2rem;
     font-weight: bold;
+    margin-bottom: 15px;
 }
 
-input[type="number"] {
+.progress-container {
     width: 100%;
-    padding: 14px;
-    font-size: 1.4rem;
-    text-align: center;
-    margin-bottom: 16px;
-    border: none;
-    outline: none;
+    height: 100%;
+    max-height: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 35px;
 }
 
-/* Ta bort pilar i input number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.progress-bar {
+    height: 10px;
+    width: 0%;
+    background: var(--btn-primary);
+    transition: width 0.3s ease;
 }
-input[type=number] {
-    -moz-appearance: textfield;
+
+.game-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.question {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#answer-input {
+    flex-grow: 1;
+    padding: 15px;
+    font-size: 1.4rem;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    text-align: center;
+}
+#answer-input:focus, #battle-answer-input:focus {
+    outline: none;
+    border-color: var(--border-color);
 }
 
 .feedback {
+    min-height: 24px;
     font-size: 1.2rem;
-    font-weight: 700;
-    min-height: 28px;
-    margin-bottom: 16px;
+    font-weight: bold;
+}
+.feedback.correct { color: #00ff99; }
+.feedback.wrong { color: #ff3366; }
+
+/* =========================================================================
+   8. SLUTSKÄRMAR & POPUPS (MODALS, SLUTKORT)
+   ========================================================================= */
+.victory-card, .fail-card {
+    text-align: center;
+    padding: 40px 10px;
 }
 
-/* End-icons */
-.end-icon {
-    font-size: 4rem;
-    margin-bottom: 16px;
-    display: inline-block;
+.victory-icon, .fail-icon { font-size: 4.5rem; margin-bottom: 20px; }
+.victory-card h2 { color: #00ff99; margin-bottom: 15px; }
+.fail-card h2 { color: #ff3366; margin-bottom: 15px; }
+
+.victory-stats {
+    margin: 20px 0 40px 0;
+    font-size: 1.1rem;
+    opacity: 0.8;
 }
 
-/* Stats badge på vinstskärm */
-.stats-badge {
-    display: inline-flex;
+.fail-buttons {
+    display: flex;
     flex-direction: column;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 20px;
-    border-radius: 30px;
-    margin-bottom: 20px;
-}
-.badge-label {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-}
-.badge-value {
-    font-size: 1.3rem;
+    gap: 15px;
+    margin-top: 30px;
 }
 
-/* STÄNDIG TROFÉRÄKNARE I TOPPEN */
-.trophy-counter-badge {
-    display: inline-flex;
+/* Modaler / Popups */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: #161f30;
+    border: 2px solid #00ffcc;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+body.theme-dungeons .modal-content {
+    background: #3e2f21;
+    border-color: #d35400;
+}
+
+.modal-content h3 { margin-bottom: 20px; font-size: 1.4rem; }
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.theme-select-btn {
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    font-weight: bold;
-    margin-bottom: 14px;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 10px;
+    transition: all 0.2s ease;
 }
-.trophy-icon {
-    animation: gentlePop 2s infinite alternate ease-in-out;
+.theme-select-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.02); }
+
+.close-modal-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
-/* Spel-animationer */
+/* Hjälpmanual */
+.help-content {
+    text-align: left;
+    background: rgba(0,0,0,0.2);
+    padding: 25px;
+    border-radius: 12px;
+    margin: 20px 0 30px 0;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.help-content h3 { margin-bottom: 8px; font-size: 1.1rem; color: var(--border-color); }
+.help-content p { margin-bottom: 20px; font-size: 0.95rem; opacity: 0.8; line-height: 1.4; }
+
+/* =========================================================================
+   9. ANIMATIONER
+   ========================================================================= */
+@keyframes floatingEnemy {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+.enemy-hit { animation: flashRed 0.2s ease-in-out 2; }
+@keyframes flashRed {
+    0% { background: rgba(255, 255, 255, 0.05); }
+    50% { background: rgba(255, 0, 0, 0.4); }
+    100% { background: rgba(255, 255, 255, 0.05); }
+}
+
 .shake { animation: shakeAnim 0.4s ease-in-out; }
 @keyframes shakeAnim {
     0%, 100% { transform: translateX(0); }
@@ -214,255 +677,9 @@ input[type=number] {
     40%, 80% { transform: translateX(6px); }
 }
 
-.success-pop { animation: successPopAnim 0.4s ease-out; }
-@keyframes successPopAnim {
+.success-pop { animation: popAnim 0.4s ease-out; }
+@keyframes popAnim {
     0% { transform: scale(1); }
-    50% { transform: scale(1.04); }
+    50% { transform: scale(1.03); border-color: #00ff99; }
     100% { transform: scale(1); }
-}
-
-@keyframes gentlePop {
-    0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,215,0,0)); }
-    100% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(255,215,0,0.6)); }
-}
-
-
-/* =========================================
-   2. POP-UP (MODAL) FÖR TEMABYTE
-   ========================================= */
-.theme-bottom-container {
-    margin-top: 32px;
-}
-.theme-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: all 0.2s;
-}
-.modal-overlay {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.75);
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.2s ease-out;
-}
-.modal-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 20px 0;
-}
-.modal-opt-btn {
-    padding: 16px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 12px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s;
-}
-
-
-/* =========================================
-   TEMA 1: CYBER-NEON (Futuristisk / Blå)
-   ========================================= */
-body.theme-cyber {
-    background-color: #030712;
-    background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #030712 100%);
-    color: #f3f4f6;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.theme-cyber .theme-toggle-btn { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
-.theme-cyber .theme-toggle-btn:hover { color: #fff; background: #374151; }
-
-.theme-cyber .logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 2.8rem; letter-spacing: -1px; color: #fff; line-height: 1.1; }
-.theme-cyber .logo-sub { color: #00ffcc; font-weight: 800; font-size: 3rem; text-shadow: 0 0 12px rgba(0,255,204,0.5); }
-.theme-cyber .subtitle { color: #9ca3af; margin: 12px 0 32px 0; font-size: 1rem; }
-.theme-cyber h2 { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: 1px; }
-
-/* Cards & Modals */
-.theme-cyber .card, .theme-cyber .victory-card, .theme-cyber .modal-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-.theme-cyber .help-card { background: rgba(17, 24, 39, 0.7); text-align: left; color: #d1d5db; }
-.theme-cyber .help-card p { margin-bottom: 12px; font-size: 1.05rem; }
-.theme-cyber .help-card p:last-child { margin-bottom: 0; }
-.theme-cyber .modal-opt-btn { background: #111827; color: #fff; border: 1px solid #1f2937; }
-.theme-cyber .modal-opt-btn:hover { border-color: #38bdf8; background: #1e293b; transform: translateX(4px); }
-.theme-cyber input[type="number"] { background: #020617; border: 2px solid #1e293b; color: #fff; font-family: 'Orbitron', sans-serif; border-radius: 12px; }
-.theme-cyber input[type="number"]:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.2); }
-
-/* Grid & Hover */
-.theme-cyber .level-btn { background: #0f172a; border: 2px solid #1e293b; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 1.8rem; }
-.theme-cyber .level-btn:hover:not(.completed) {
-    color: #fff; border-color: #38bdf8; background: rgba(56, 189, 248, 0.08);
-    transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
-}
-.theme-cyber .level-btn.selected { border-color: #38bdf8; color: #38bdf8; background: rgba(56,189,248,0.1); box-shadow: 0 0 15px rgba(56,189,248,0.25); }
-.theme-cyber .level-btn.completed { border-color: rgba(16,185,129,0.2); color: #10b981; background: rgba(16,185,129,0.05); }
-
-/* Spel-UI & Framsteg */
-.theme-cyber .game-header { font-family: 'Orbitron', sans-serif; color: #64748b; }
-.theme-cyber .lives { filter: drop-shadow(0 0 4px #ef4444); }
-.theme-cyber .progress-container { background: #020617; border-radius: 20px; }
-.theme-cyber .progress-bar { background: linear-gradient(90deg, #38bdf8, #3b82f6); box-shadow: 0 0 8px #38bdf8; border-radius: 20px; }
-.theme-cyber .trophy-counter-badge { color: #38bdf8; border-color: rgba(56,189,248,0.2); font-family: 'Orbitron', sans-serif; }
-
-/* Knappar & Text */
-.theme-cyber .btn.primary { background: #3b82f6; color: #fff; border-radius: 14px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-.theme-cyber .btn.primary:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
-.theme-cyber .btn.secondary { background: #1e293b; color: #94a3b8; border-radius: 14px; }
-.theme-cyber .text-btn { color: #64748b; }
-.theme-cyber .text-btn:hover { color: #94a3b8; }
-.theme-cyber .reset-progress-btn:hover { color: #ef4444 !important; }
-.theme-cyber .question { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: #fff; font-weight: 800; }
-.theme-cyber .correct { color: #10b981; text-shadow: 0 0 8px rgba(16,185,129,0.3); }
-.theme-cyber .wrong { color: #ef4444; text-shadow: 0 0 8px rgba(239,68,68,0.3); }
-
-/* Cyber Vinst */
-.theme-cyber .epic-win { border: 2px solid #00ffcc; box-shadow: 0 0 30px rgba(0,255,204,0.25); }
-.theme-cyber .epic-btn { background: #00ffcc !important; color: #030712 !important; border-radius: 14px !important; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.5px; }
-.theme-cyber .epic-btn:hover { background: #22ffea !important; box-shadow: 0 0 15px rgba(0,255,204,0.4); }
-@keyframes cyberPulseBtn { 0% { box-shadow: 0 0 10px rgba(0,255,204,0.3); } 100% { box-shadow: 0 0 22px rgba(0,255,204,0.6); } }
-
-
-/* =========================================
-   TEMA 2: DUNGEONS (Fantasy / Mörker)
-   ========================================= */
-body.theme-dungeon {
-    background-color: #1a110a;
-    background-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%), url('https://www.transparenttextures.com/patterns/dark-rock.png');
-    color: #e0dac9; font-family: 'Metamorphous', serif;
-}
-body.theme-dungeon::before {
-    content: ""; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(253, 186, 116, 0.08) 0%, rgba(0,0,0,0) 50%); top: -10%; left: -10%; animation: flicker 3s infinite alternate; pointer-events: none;
-}
-@keyframes flicker { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-
-.theme-dungeon .theme-toggle-btn { background: #3f3024; border-color: #33251a; color: #a67c00; font-family: 'Grenze Gotisch', serif; border: 1px solid #33251a; }
-.theme-dungeon .theme-toggle-btn:hover { color: #ffe08a; background: #4a3b2c; }
-
-.theme-dungeon .logo { font-family: 'Grenze Gotisch', serif; font-size: 3.2rem; background: linear-gradient(180deg, #ffe08a, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
-.theme-dungeon .logo-sub { background: linear-gradient(180deg, #ff6b6b, #ee0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9)); }
-.theme-dungeon .subtitle { color: #8e8171; margin: 12px 0 32px 0; }
-.theme-dungeon h2 { font-family: 'Grenze Gotisch', serif; font-size: 2.2rem; color: #d4af37; text-shadow: 0 2px 2px #000; }
-
-/* Cards & Modals */
-.theme-dungeon .card, .theme-dungeon .victory-card, .theme-dungeon .modal-card { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/dark-rock.png'); border: 4px solid #3f3024; box-shadow: 0 15px 35px #000, inset 0 0 20px rgba(0,0,0,0.6); border-radius: 8px; }
-.theme-dungeon #modal-title { font-family: 'Grenze Gotisch', serif; color: #d4af37; text-shadow: 0 2px 2px #000; font-size: 1.6rem; }
-.theme-dungeon .modal-opt-btn { background: #3f3024; color: #e0dac9; border: 2px solid #33251a; font-family: 'Grenze Gotisch', serif; font-size: 1.2rem; }
-.theme-dungeon .modal-opt-btn:hover { color: #ffe08a; border-color: #d4af37; background: #4a3b2c; transform: translateX(4px); }
-.theme-dungeon .help-card { background-color: #c9b999; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); color: #33251a; border: 2px solid #8e8171; }
-.theme-dungeon .help-card p { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; margin-bottom: 6px; text-align: left; }
-.theme-dungeon input[type="number"] { background: #1a110a; border: 2px solid #33251a; color: #ffe08a; font-family: 'Grenze Gotisch', serif; border-radius: 4px; }
-.theme-dungeon input[type="number"]:focus { border-color: #d4af37; }
-
-/* Grid & Hover */
-.theme-dungeon .level-btn { background-color: #2a1f15; background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); border: 2px solid #3f3024; color: #a67c00; font-family: 'Grenze Gotisch', serif; font-size: 1.8rem; font-weight: 700; border-radius: 6px; text-shadow: 0 1px 1px #000; }
-.theme-dungeon .level-btn:hover:not(.completed) {
-    color: #ffe08a; border-color: #ffe08a; background-color: #3f3024;
-    transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25), 0 0 15px rgba(212, 175, 55, 0.1);
-}
-.theme-dungeon .level-btn.selected { border-color: #d4af37; color: #ffe08a; background-color: #3f3024; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
-.theme-dungeon .level-btn.completed { border-color: #3f3024; color: #22c55e; background-color: #1a110a; background-image: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-
-/* Spel-UI & Framsteg */
-.theme-dungeon .game-header { font-family: 'Grenze Gotisch', serif; color: #8e8171; font-size: 1.2rem; }
-.theme-dungeon .lives { filter: drop-shadow(0 0 6px #ee0000); }
-.theme-dungeon .progress-container { background: #000; border: 2px solid #3f3024; border-radius: 4px; }
-.theme-dungeon .progress-bar { background: linear-gradient(90deg, #ee0000, #ff6b6b, #ee0000); background-size: 200% 100%; animation: lavaFlow 2s linear infinite; box-shadow: 0 0 8px #ee0000; border-radius: 0; }
-.theme-dungeon .trophy-counter-badge { color: #d4af37; border-color: rgba(212,175,55,0.2); font-family: 'Grenze Gotisch', serif; font-size: 1.1rem; }
-
-/* Knappar & Text */
-.theme-dungeon .btn.primary { background: linear-gradient(135deg, #ee0000, #990000); color: white; border-radius: 4px; box-shadow: 0 4px 10px #000; }
-.theme-dungeon .btn.primary:hover:not(:disabled) { background: linear-gradient(135deg, #ff1a1a, #ee0000); transform: translateY(-1px); }
-.theme-dungeon .btn.secondary { background-color: #3f3024; color: #e0dac9; border: 1px solid #33251a; border-radius: 4px; }
-.theme-dungeon .text-btn { color: #5c4e3e; }
-.theme-dungeon .text-btn:hover { color: #8e8171; }
-.theme-dungeon .reset-progress-btn:hover { color: #ff6b6b !important; }
-.theme-dungeon .question { font-family: 'Grenze Gotisch', serif; font-size: 3.6rem; color: #ffe08a; text-shadow: 0 2px 4px #000; }
-.theme-dungeon .correct { color: #10b981; text-shadow: 0 0 5px rgba(16,185,129,0.4); }
-.theme-dungeon .wrong { color: #ee0000; text-shadow: 0 0 5px rgba(238,0,0,0.4); }
-
-/* Dungeon Vinst */
-.theme-dungeon .epic-win { border: 5px double #d4af37; box-shadow: 0 0 50px rgba(212, 175, 55, 0.4); }
-.theme-dungeon #victory-title {
-    font-family: 'Metamorphous', serif; font-size: 2.3rem; letter-spacing: 2px;
-    background: linear-gradient(180deg, #ffe08a, #d4af37, #a67c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 3px 5px #000); text-transform: uppercase; margin-bottom: 16px;
-}
-.theme-dungeon #victory-text { font-family: 'Metamorphous', serif; color: #ffe08a !important; text-shadow: 0 1px 3px #000; font-size: 1.15rem; line-height: 1.4; }
-.theme-dungeon #badge-label { color: #8e8171; font-family: 'Metamorphous', serif; }
-
-.theme-dungeon .epic-btn {
-    background: linear-gradient(135deg, #d4af37, #a67c00) !important; color: #1a110a !important;
-    border: 2px solid #ffe08a !important; box-shadow: 0 4px 15px #000; border-radius: 4px !important;
-    font-family: 'Grenze Gotisch', serif; font-size: 1.25rem; letter-spacing: 1px;
-}
-.theme-dungeon .epic-btn:hover { background: linear-gradient(135deg, #ffe08a, #d4af37) !important; transform: translateY(-2px); }
-
-
-/* =========================================
-   CUTSCENE / DUOLINGO-EFFEKT (Vinstskärm)
-   ========================================= */
-.cutscene-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 70vh; 
-    position: relative;
-    border: none !important; 
-    background: transparent !important; 
-    box-shadow: none !important;
-}
-
-.cutscene-layout .end-icon {
-    font-size: 6rem; 
-    margin-bottom: 10px;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
-}
-
-.cutscene-layout h2 {
-    font-size: 2.2rem;
-    margin-bottom: 12px;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.cutscene-layout p {
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.bottom-action {
-    width: 100%;
-    margin-top: 30px;
-}
-
-/* Sekventiella animationer */
-.pop-anim {
-    opacity: 0;
-    transform: scale(0.5) translateY(30px);
-    animation: cutscenePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.delay-1 { animation-delay: 0.4s; } 
-.delay-2 { animation-delay: 1.0s; } 
-.delay-3 { animation-delay: 1.8s; } 
-.delay-4 { animation-delay: 2.6s; } 
-
-@keyframes cutscenePop {
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
 }
