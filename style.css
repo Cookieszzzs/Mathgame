@@ -1,11 +1,11 @@
 /* =========================================================================
-   1. GLOBAL RESETS & CORE STYLES
+   1. GLOBAL RESET & AGGRESSIVE BUTTON CLEANUP
    ========================================================================= */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -14,23 +14,66 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    transition: background 0.5s ease, color 0.3s ease;
+    transition: background 0.3s ease;
     overflow-x: hidden;
+    background: #0b0f19; /* Snygg mörk fallback direkt */
 }
 
+/* Nollställ webbläsarens fula standard-knappar totalt */
+button, input[type="button"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+/* =========================================================================
+   2. THEME THEMES & VARIABLES (Med stabila fallbacks)
+   ========================================================================= */
+body.theme-cyber {
+    background: radial-gradient(circle at center, #0b0f19 0%, #020408 100%);
+    color: #ffffff;
+    --bg-container: rgba(13, 20, 35, 0.9);
+    --border-color: #00ffcc;
+    --container-shadow: 0 0 30px rgba(0, 255, 204, 0.25);
+    --btn-main-bg: linear-gradient(45deg, #00ffcc, #0099ff);
+    --btn-main-text: #020408;
+    --btn-sub-bg: rgba(255, 255, 255, 0.05);
+    --btn-sub-border: rgba(0, 255, 204, 0.4);
+    --btn-sub-text: #00ffcc;
+}
+
+body.theme-dungeons {
+    background: radial-gradient(circle at center, #2c1d11 0%, #110a05 100%);
+    color: #f5edd8;
+    --bg-container: rgba(43, 32, 22, 0.95);
+    --border-color: #d35400;
+    --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    --btn-main-bg: linear-gradient(45deg, #d35400, #c0392b);
+    --btn-main-text: #ffffff;
+    --btn-sub-bg: rgba(0, 0, 0, 0.4);
+    --btn-sub-border: #e67e22;
+    --btn-sub-text: #ffe08a;
+}
+
+/* =========================================================================
+   3. MAIN LAYOUT CONTAINER
+   ========================================================================= */
 .container {
     width: 100%;
-    max-width: 500px;
-    min-height: 600px;
-    background: var(--bg-container);
-    border: 3px solid var(--border-color);
+    max-width: 480px;
+    min-height: 580px;
+    background: var(--bg-container, #111827);
+    border: 3px solid var(--border-color, #374151);
     border-radius: 20px;
-    padding: 30px;
-    box-shadow: var(--container-shadow);
+    padding: 25px;
+    box-shadow: var(--container-shadow, 0 10px 25px rgba(0,0,0,0.5));
     display: flex;
     flex-direction: column;
     position: relative;
-    backdrop-filter: blur(10px);
 }
 
 .screen {
@@ -45,206 +88,189 @@ body {
 }
 
 /* =========================================================================
-   2. THEME DEFINITIONS (CYBER & DUNGEONS)
-   ========================================================================= */
-/* CYBER THEME (DEFAULT) */
-body.theme-cyber {
-    background: radial-gradient(circle at center, #0b0f19 0%, #020408 100%);
-    color: #ffffff;
-    --bg-container: rgba(13, 20, 35, 0.85);
-    --border-color: #00ffcc;
-    --container-shadow: 0 0 30px rgba(0, 255, 204, 0.2), inset 0 0 15px rgba(0, 255, 204, 0.1);
-    --btn-primary: linear-gradient(45deg, #00ffcc, #0099ff);
-    --btn-secondary: rgba(255, 255, 255, 0.08);
-    --btn-text: #020408;
-}
-
-/* DUNGEONS THEME */
-body.theme-dungeons {
-    background: radial-gradient(circle at center, #2c1d11 0%, #110a05 100%);
-    color: #f5edd8;
-    --bg-container: rgba(43, 32, 22, 0.9);
-    --border-color: #d35400;
-    --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(211, 84, 0, 0.15);
-    --btn-primary: linear-gradient(45deg, #d35400, #c0392b);
-    --btn-secondary: rgba(0, 0, 0, 0.3);
-    --btn-text: #ffffff;
-}
-
-/* =========================================================================
-   3. BUTTONS & UI COMPONENTS
+   4. THE BULLETPROOF ACTION BUTTONS (CORE STYLES)
    ========================================================================= */
 .action-btn {
+    display: block;
     width: 100%;
-    padding: 15px;
-    font-size: 1.1rem;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
+    letter-spacing: 1.5px;
     border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Standard primärknapp */
-.theme-cyber .action-btn:not(.menu-btn-sub):not(.back-btn):not(.battle-mode-btn):not(.reset-progress-btn) {
-    background: var(--btn-primary);
-    color: var(--btn-text);
-    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+/* Huvudknappar (Börja utmaning, Gå in i systemet, etc.) */
+.theme-cyber .menu-btn-main, 
+.theme-cyber .start-btn {
+    background: var(--btn-main-bg);
+    color: var(--btn-main-text);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
 }
 
-.theme-dungeons .action-btn:not(.menu-btn-sub):not(.back-btn):not(.battle-mode-btn):not(.reset-progress-btn) {
-    background: var(--btn-primary);
-    color: var(--btn-text);
-    border: 2px solid #e67e22;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+.theme-dungeons .menu-btn-main, 
+.theme-dungeons .start-btn {
+    background: var(--btn-main-bg);
+    color: var(--btn-main-text);
+    border: 1px solid #ff9f43;
 }
 
+/* Sekundära knappar (Byt Värld, Regler, etc.) */
+.menu-btn-sub {
+    background: var(--btn-sub-bg);
+    color: var(--btn-sub-text);
+    border: 2px solid var(--btn-sub-border);
+}
+
+/* DEN EPISKA BATTLE MODE-KNAPPEN (Säkerställd herre på täppan) */
+.action-btn.battle-mode-btn {
+    margin-top: 15px;
+    color: #ffffff !important;
+}
+.theme-cyber .battle-mode-btn {
+    background: linear-gradient(45deg, #ff007f, #7f00ff) !important;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.5) !important;
+    border: 1px solid #ff007f;
+}
+.theme-dungeons .battle-mode-btn {
+    background: linear-gradient(45deg, #ba135d, #6e006f) !important;
+    border: 2px solid #f1c40f !important;
+}
+
+/* Hover- och klick-interaktioner */
 .action-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    filter: brightness(1.1);
+    filter: brightness(1.2);
 }
 
 .action-btn:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(1px);
 }
 
+/* Låst/Inaktiverad knapp (När man inte valt nivå) */
 .action-btn:disabled {
-    background: #333333 !important;
-    color: #777777 !important;
+    background: #222630 !important;
+    color: #555c6d !important;
+    border: 1px solid #313745 !important;
     box-shadow: none !important;
     cursor: not-allowed;
-    border: none !important;
-    opacity: 0.5;
+    opacity: 0.6;
+    transform: none !important;
 }
 
-/* Back-knapp */
+/* Liten snygg tillbaka-knapp i hörnen */
 .back-btn {
-    background: var(--btn-secondary);
+    background: rgba(255, 255, 255, 0.07);
     color: inherit;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 0.9rem;
-    cursor: pointer;
     font-weight: bold;
-    transition: all 0.2s ease;
+    display: inline-block;
+    width: auto;
 }
 .back-btn:hover {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Groupers för att hålla ordning på listor */
+.menu-buttons, .fail-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
 }
 
 /* =========================================================================
-   4. HUVUDMENY (MENU SCREEN)
+   5. HUVUDMENY RUBRIKER & SKÄRMAR
    ========================================================================= */
 .logo-container {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
 .main-logo {
-    font-size: 3rem;
+    font-size: 2.8rem;
     font-weight: 900;
-    letter-spacing: 3px;
-    line-height: 1;
+    letter-spacing: 2px;
 }
-
-.theme-cyber .main-logo {
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
-}
-
-.theme-dungeons .main-logo {
-    color: #e67e22;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-}
+.theme-cyber .main-logo { text-shadow: 0 0 10px rgba(0, 255, 204, 0.4); }
+.theme-dungeons .main-logo { color: #e67e22; text-shadow: 2px 2px 4px #000; }
 
 .logo-sub {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: bold;
-    letter-spacing: 6px;
+    letter-spacing: 5px;
     margin-top: 5px;
 }
-
-.theme-cyber .logo-sub { color: #ff007f; text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); }
+.theme-cyber .logo-sub { color: #ff007f; text-shadow: 0 0 8px rgba(255, 0, 127, 0.4); }
 .theme-dungeons .logo-sub { color: #bdc3c7; }
 
 .subtitle {
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
     opacity: 0.8;
-    margin-bottom: 50px;
-    padding: 0 10px;
+    margin-bottom: 40px;
     line-height: 1.4;
 }
 
-.menu-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 40px;
-}
-
-.menu-btn-sub {
-    background: var(--btn-secondary);
-    color: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.menu-btn-sub:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
 /* =========================================================================
-   5. KARTAN / NIVÅVAL (LEVEL SCREEN)
+   6. KARTAN / NIVÅVAL (LEVEL GRID)
    ========================================================================= */
 .screen-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .trophy-counter {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
-    background: rgba(0,0,0,0.2);
-    padding: 5px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #map-title {
     text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 25px;
-    letter-spacing: 1px;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    line-height: 1.3;
 }
 
 .level-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 .level-btn {
     aspect-ratio: 1;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    border-radius: 14px;
     color: inherit;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: bold;
-    cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: all 0.2s ease;
+}
+.level-btn:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .level-btn .lvl-type {
@@ -253,433 +279,266 @@ body.theme-dungeons {
     opacity: 0.6;
 }
 
-.level-btn:hover {
-    transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.12);
-}
-
-/* Markerad nivå */
 .theme-cyber .level-btn.selected {
     border-color: #00ffcc;
-    background: rgba(0, 255, 204, 0.15);
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    background: rgba(0, 255, 204, 0.12);
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.3);
 }
 .theme-dungeons .level-btn.selected {
     border-color: #e67e22;
-    background: rgba(230, 126, 34, 0.2);
-    box-shadow: 0 0 15px rgba(230, 126, 34, 0.4);
+    background: rgba(230, 126, 34, 0.15);
+    box-shadow: 0 0 12px rgba(230, 126, 34, 0.3);
 }
 
-/* Klarad nivå */
 .theme-cyber .level-btn.completed {
-    background: linear-gradient(135deg, rgba(0,255,150,0.2), rgba(0,150,255,0.2));
+    background: linear-gradient(135deg, rgba(0,255,150,0.15), rgba(0,150,255,0.15));
     border-color: #00ff99;
 }
 .theme-dungeons .level-btn.completed {
-    background: linear-gradient(135deg, rgba(46,204,113,0.3), rgba(39,174,96,0.3));
+    background: linear-gradient(135deg, rgba(46,204,113,0.2), rgba(39,174,96,0.2));
     border-color: #2ecc71;
-}
-
-/* EPISK BATTLE MODE-KNAPP */
-.battle-mode-btn {
-    margin-top: 15px;
-    color: #fff !important;
-}
-.theme-cyber .battle-mode-btn {
-    background: linear-gradient(45deg, #ff007f, #7f00ff) !important;
-    text-shadow: 0 0 5px #fff;
-    box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
-}
-.theme-dungeons .battle-mode-btn {
-    background: linear-gradient(45deg, #d35400, #c0392b) !important;
-    border: 2px solid #f1c40f !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .reset-progress-btn {
     background: transparent;
     border: none;
     color: inherit;
-    opacity: 0.4;
-    font-size: 0.8rem;
-    margin-top: 25px;
+    opacity: 0.3;
+    font-size: 0.75rem;
+    margin-top: 15px;
     cursor: pointer;
     text-decoration: underline;
     align-self: center;
 }
-.reset-progress-btn:hover { opacity: 0.8; }
+.reset-progress-btn:hover { opacity: 0.7; }
 
 /* =========================================================================
-   6. BATTLE MODE ARENA STYLES
+   7. BATTLE MODE ARENA STYLES
    ========================================================================= */
 .battle-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 #battle-stage-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
-/* HP-mätare design */
 .hp-bar-wrapper {
     width: 100%;
-    height: 24px;
-    background: rgba(0, 0, 0, 0.4);
+    height: 22px;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 6px;
     position: relative;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    margin-top: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 4px;
 }
 
 .hp-bar {
     height: 100%;
     width: 100%;
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: width 0.3s ease;
 }
-
-.enemy-hp {
-    background: linear-gradient(90deg, #ff3333, #ff6666);
-    box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-}
-
-.player-hp {
-    background: linear-gradient(90deg, #00ff66, #33ff99);
-    box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
-}
+.enemy-hp { background: linear-gradient(90deg, #ff3333, #ff6666); }
+.player-hp { background: linear-gradient(90deg, #00ff66, #33ff99); }
 
 .hp-text {
     position: absolute;
     width: 100%;
     text-align: center;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: bold;
     color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    text-shadow: 1px 1px 2px #000;
 }
 
-/* Fiende-container */
 .enemy-container {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px;
     border-radius: 12px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.enemy-avatar {
-    font-size: 3rem;
-    margin-right: 15px;
-    animation: floatingEnemy 3s ease-in-out infinite;
-}
+.enemy-avatar { font-size: 2.8rem; margin-right: 12px; animation: floatingEnemy 3s ease-in-out infinite; }
+.enemy-info { flex-grow: 1; }
 
-.enemy-info {
-    flex-grow: 1;
-}
-
-/* Stridszonen */
 .battle-zone {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
     text-align: center;
-    min-height: 150px;
+    min-height: 130px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
-.battle-feedback {
-    font-style: italic;
-    font-size: 1.1rem;
-    color: #ffe08a;
-    line-height: 1.4;
-    max-width: 90%;
-}
+.battle-feedback { font-style: italic; font-size: 1rem; color: #ffe08a; line-height: 1.4; }
+.battle-question { font-size: 2rem; font-weight: bold; margin-bottom: 12px; }
 
-.battle-question {
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
+#battle-quiz-container div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 #battle-answer-input {
-    width: 120px;
-    padding: 12px;
-    font-size: 1.3rem;
+    width: 100px;
+    padding: 10px;
+    font-size: 1.2rem;
     text-align: center;
     border-radius: 8px;
     border: 2px solid rgba(255,255,255,0.2);
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.4);
     color: #fff;
-    margin-right: 10px;
+    margin-right: 8px;
 }
 
-/* Vapen-grid */
-.inventory-section h4 {
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
-    opacity: 0.8;
+#battle-quiz-container .action-btn {
+    width: auto;
+    padding: 10px 20px;
+    margin: 0;
 }
 
-.weapon-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 25px;
-}
+.inventory-section h4 { margin-bottom: 8px; font-size: 0.85rem; opacity: 0.7; letter-spacing: 1px; }
+.weapon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
 
 .weapon-card {
-    background: rgba(255, 255, 255, 0.07);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
-    padding: 12px 5px;
-    cursor: pointer;
+    padding: 10px 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all 0.2s ease;
-    color: white;
+    color: #fff;
 }
+.weapon-card:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.12); }
+.weapon-card .weapon-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.weapon-card .weapon-name { font-weight: bold; font-size: 0.8rem; text-align: center; margin-bottom: 2px; }
+.weapon-card .weapon-desc { font-size: 0.65rem; opacity: 0.5; text-align: center; }
 
-.weapon-card:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.weapon-card .weapon-icon { font-size: 1.8rem; margin-bottom: 5px; }
-.weapon-card .weapon-name { font-weight: bold; font-size: 0.85rem; margin-bottom: 2px; text-align: center;}
-.weapon-card .weapon-desc { font-size: 0.65rem; opacity: 0.6; text-align: center; }
-
-/* Tema-unika effekter för vapen (CYBER) */
-.theme-cyber .weapon-card.light:hover { border-color: #00ffcc; box-shadow: 0 0 10px rgba(0, 255, 204, 0.4); }
-.theme-cyber .weapon-card.medium:hover { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
-.theme-cyber .weapon-card.heavy:hover { border-color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
-
-/* Tema-unika effekter för vapen (DUNGEONS) */
-.theme-dungeons .weapon-card.light:hover { border-color: #ff9f43; box-shadow: 0 0 10px rgba(255, 159, 67, 0.4); }
-.theme-dungeons .weapon-card.medium:hover { border-color: #ee5253; box-shadow: 0 0 10px rgba(238, 82, 83, 0.4); }
-.theme-dungeons .weapon-card.heavy:hover { border-color: #10ac84; box-shadow: 0 0 10px rgba(16, 172, 132, 0.4); }
-
-.player-battle-hud {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
+.player-battle-hud { background: rgba(0, 0, 0, 0.25); padding: 10px; border-radius: 10px; }
 
 /* =========================================================================
-   7. STANDARDSPELET (GAME SCREEN)
+   8. STANDARDSPELET (GAME CORE)
    ========================================================================= */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
+.game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: bold;}
+.progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 25px; }
+.progress-bar { height: 100%; width: 0%; background: var(--btn-main-bg); transition: width 0.3s ease; }
 
-.progress-container {
-    width: 100%;
-    height: 100%;
-    max-height: 10px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 35px;
-}
-
-.progress-bar {
-    height: 10px;
-    width: 0%;
-    background: var(--btn-primary);
-    transition: width 0.3s ease;
-}
-
-.game-card {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    padding: 30px 20px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.question {
-    font-size: 3.5rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    letter-spacing: 1px;
-}
-
-.input-area {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+.game-card { background: rgba(0, 0, 0, 0.25); border-radius: 16px; padding: 25px 15px; text-align: center; }
+.question { font-size: 3.2rem; font-weight: bold; margin-bottom: 25px; }
+.input-area { display: flex; gap: 10px; margin-bottom: 15px; }
 
 #answer-input {
     flex-grow: 1;
-    padding: 15px;
-    font-size: 1.4rem;
+    padding: 12px;
+    font-size: 1.3rem;
     border-radius: 12px;
     border: 2px solid rgba(255,255,255,0.1);
     background: rgba(0,0,0,0.4);
     color: #fff;
     text-align: center;
 }
-#answer-input:focus, #battle-answer-input:focus {
-    outline: none;
-    border-color: var(--border-color);
-}
+#answer-input:focus, #battle-answer-input:focus { border-color: var(--border-color); }
 
-.feedback {
-    min-height: 24px;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
+.feedback { min-height: 24px; font-size: 1.1rem; font-weight: bold; }
 .feedback.correct { color: #00ff99; }
 .feedback.wrong { color: #ff3366; }
 
 /* =========================================================================
-   8. SLUTSKÄRMAR & POPUPS (MODALS, SLUTKORT)
+   9. MODALS & POPUPS
    ========================================================================= */
-.victory-card, .fail-card {
-    text-align: center;
-    padding: 40px 10px;
-}
-
-.victory-icon, .fail-icon { font-size: 4.5rem; margin-bottom: 20px; }
-.victory-card h2 { color: #00ff99; margin-bottom: 15px; }
-.fail-card h2 { color: #ff3366; margin-bottom: 15px; }
-
-.victory-stats {
-    margin: 20px 0 40px 0;
-    font-size: 1.1rem;
-    opacity: 0.8;
-}
-
-.fail-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-/* Modaler / Popups */
 .modal {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 100;
 }
-
 .modal-content {
-    background: #161f30;
+    background: #111827;
     border: 2px solid #00ffcc;
-    padding: 30px;
+    padding: 25px;
     border-radius: 20px;
-    width: 90%;
-    max-width: 400px;
+    width: 90%; max-width: 380px;
     text-align: center;
 }
-
-body.theme-dungeons .modal-content {
-    background: #3e2f21;
-    border-color: #d35400;
-}
-
-.modal-content h3 { margin-bottom: 20px; font-size: 1.4rem; }
-
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
-}
+body.theme-dungeons .modal-content { background: #3e2f21; border-color: #d35400; }
+.theme-options { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
 
 .theme-select-btn {
-    padding: 15px;
-    font-size: 1.1rem;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: bold;
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 12px;
     background: rgba(255,255,255,0.05);
     color: #fff;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: all 0.2s ease;
 }
-.theme-select-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.02); }
+.theme-select-btn:hover { background: rgba(255,255,255,0.15); }
 
-.close-modal-btn {
-    background: transparent;
-    border: none;
-    color: inherit;
-    opacity: 0.6;
-    cursor: pointer;
-    text-decoration: underline;
-}
+.close-modal-btn { background: transparent; border: none; color: inherit; opacity: 0.5; text-decoration: underline; }
 
-/* Hjälpmanual */
+.victory-card, .fail-card { text-align: center; padding: 20px 0; }
+.victory-icon, .fail-icon { font-size: 4rem; margin-bottom: 15px; }
+.victory-card h2 { color: #00ff99; }
+.fail-card h2 { color: #ff3366; }
+.victory-stats { margin: 15px 0 30px 0; opacity: 0.8; }
+
 .help-content {
     text-align: left;
-    background: rgba(0,0,0,0.2);
-    padding: 25px;
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
     border-radius: 12px;
-    margin: 20px 0 30px 0;
-    max-height: 320px;
+    margin: 15px 0 25px 0;
+    max-height: 280px;
     overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
-.help-content h3 { margin-bottom: 8px; font-size: 1.1rem; color: var(--border-color); }
-.help-content p { margin-bottom: 20px; font-size: 0.95rem; opacity: 0.8; line-height: 1.4; }
+.help-content h3 { margin-bottom: 4px; color: var(--border-color); }
+.help-content p { margin-bottom: 15px; opacity: 0.8; }
 
 /* =========================================================================
-   9. ANIMATIONER
+   10. ANIMATIONS
    ========================================================================= */
 @keyframes floatingEnemy {
-    0% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-6px); }
-    100% { transform: translateY(0px); }
 }
-
 .enemy-hit { animation: flashRed 0.2s ease-in-out 2; }
 @keyframes flashRed {
-    0% { background: rgba(255, 255, 255, 0.05); }
-    50% { background: rgba(255, 0, 0, 0.4); }
-    100% { background: rgba(255, 255, 255, 0.05); }
+    0%, 100% { background: rgba(255, 255, 255, 0.04); }
+    50% { background: rgba(255, 0, 0, 0.3); }
 }
-
-.shake { animation: shakeAnim 0.4s ease-in-out; }
+.shake { animation: shakeAnim 0.3s ease-in-out; }
 @keyframes shakeAnim {
     0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
-
-.success-pop { animation: popAnim 0.4s ease-out; }
+.success-pop { animation: popAnim 0.3s ease-out; }
 @keyframes popAnim {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); border-color: #00ff99; }
-    100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
